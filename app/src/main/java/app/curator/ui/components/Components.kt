@@ -90,7 +90,10 @@ fun Thumb(item: Item, modifier: Modifier = Modifier, px: Int = 256, fit: Boolean
     val ctx = LocalContext.current
     val key = "${item.id}:$px"
     val bmp by produceState<ImageBitmap?>(Pictures.cache.get(key)?.asImageBitmap(), key) {
-        if (value == null) value = withContext(Dispatchers.IO) {
+        // The same slot can show another thing next (the next card): never keep the old picture.
+        val cached = Pictures.cache.get(key)?.asImageBitmap()
+        value = cached
+        if (cached == null) value = withContext(Dispatchers.IO) {
             ctx.container.picture(item, px)?.also { Pictures.cache.put(key, it) }?.asImageBitmap()
         }
     }

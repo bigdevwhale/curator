@@ -175,7 +175,7 @@ S = [
     ("set_training", "Go through the training again", "Пройти обучение заново"),
     ("ob_3t", "Nothing is deleted without your signature", "Без вашей подписи ничего не удаляется"),
     ("ob_3b", "Written-off things wait in the act. You can look at them again or take them back. Only your signature deletes them, with one question from the phone for all of them.", "Списанное сначала ждёт в акте: его можно пересмотреть или вернуть. Удаляется оно только после вашей подписи, и телефон спросит разрешение один раз на всё сразу."),
-    ("ob_go", "Open the storeroom", "Открыть запасник"),
+    ("ob_go", "Open Curator", "Открыть Куратор"),
     ("closed_t", "The storeroom is locked", "Запасник заперт"),
     ("closed_b", "The museum needs to see your photos and videos to sort them. They are looked at on the phone only: the app has no internet access at all.", "Чтобы разбирать фото и видео, музею нужно их видеть. Смотрит он их только на телефоне — у приложения даже нет доступа в интернет."),
     ("closed_ask", "Allow access", "Разрешить доступ"),

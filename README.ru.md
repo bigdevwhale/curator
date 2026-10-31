@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="docs/logo.png" width="96" alt="Запасник" />
+<img src="docs/logo.png" width="96" alt="Куратор" />
 
-# Запасник
+# Куратор
 
 ### Разбор галереи телефона как работа хранителя музея
 

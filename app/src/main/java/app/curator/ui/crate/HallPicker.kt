@@ -50,8 +50,8 @@ import kotlinx.coroutines.launch
 /** The museum's own monogram for a hall: its first letter in a brass ring. */
 @Composable
 fun Monogram(name: String, d: Int = 34) {
-    Box(Modifier.size(d.dp).background(C.wall, CircleShape).border(1.5.dp, C.brass, CircleShape), contentAlignment = Alignment.Center) {
-        Text(name.trim().take(1).uppercase(), style = T.Heading.copy(color = C.gold))
+    Box(Modifier.size(d.dp).background(C.bg, CircleShape).border(1.5.dp, C.accent, CircleShape), contentAlignment = Alignment.Center) {
+        Text(name.trim().take(1).uppercase(), style = T.Heading.copy(color = C.accent))
     }
 }
 
@@ -67,7 +67,7 @@ fun HallPicker(halls: List<Hall>, counts: Map<Long, Int>, onDismiss: () -> Unit,
         scope.launch { onPick(c.newHall(n)) }
     }
     Scrim(onDismiss, bottom = true) {
-        Column(Modifier.fillMaxWidth().background(C.paper, RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)).navigationBarsPadding().padding(18.dp)) {
+        Column(Modifier.fillMaxWidth().background(C.surface, RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)).navigationBarsPadding().padding(18.dp)) {
             Text(stringResource(R.string.which_hall), style = T.Title)
             Column(Modifier.heightIn(max = 360.dp).verticalScroll(rememberScrollState())) {
                 for (h in halls) Row(Modifier.fillMaxWidth().clickable { onPick(h) }.padding(vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -77,19 +77,19 @@ fun HallPicker(halls: List<Hall>, counts: Map<Long, Int>, onDismiss: () -> Unit,
                 }
             }
             if (!adding) Row(Modifier.fillMaxWidth().clickable { adding = true }.padding(vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.size(34.dp).border(1.5.dp, C.paperLine, CircleShape), contentAlignment = Alignment.Center) { Text("+", style = T.Heading.copy(color = C.muted)) }
+                Box(Modifier.size(34.dp).border(1.5.dp, C.line, CircleShape), contentAlignment = Alignment.Center) { Text("+", style = T.Heading.copy(color = C.muted)) }
                 Text(stringResource(R.string.new_hall), style = T.Heading.copy(color = C.muted), modifier = Modifier.padding(start = 12.dp))
             } else {
-                Text(stringResource(R.string.new_hall_t).uppercase(), style = T.Caps.copy(color = C.brassD), modifier = Modifier.padding(top = 10.dp, bottom = 6.dp))
+                Text(stringResource(R.string.new_hall_t).uppercase(), style = T.Caps.copy(color = C.accent), modifier = Modifier.padding(top = 10.dp, bottom = 6.dp))
                 BasicTextField(name, { name = it.take(40) }, singleLine = true, textStyle = T.Heading, cursorBrush = SolidColor(C.ink),
                     keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { create(name) }),
-                    modifier = Modifier.fillMaxWidth().border(1.dp, C.paperLine, RoundedCornerShape(3.dp)).padding(10.dp),
-                    decorationBox = { inner -> if (name.isEmpty()) Text(stringResource(R.string.new_hall_hint), style = T.Heading.copy(color = C.paperLine)); inner() })
+                    modifier = Modifier.fillMaxWidth().border(1.dp, C.line, RoundedCornerShape(3.dp)).padding(10.dp),
+                    decorationBox = { inner -> if (name.isEmpty()) Text(stringResource(R.string.new_hall_hint), style = T.Heading.copy(color = C.line)); inner() })
                 val have = halls.map { it.name.lowercase() }.toSet()
                 FlowRow(Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     for (s in stringArrayResource(R.array.hall_ideas).filter { it.lowercase() !in have }) {
-                        Text(s, style = T.Label.copy(color = C.ink), modifier = Modifier.border(1.dp, C.paperLine, RoundedCornerShape(14.dp)).clickable { create(s) }.padding(horizontal = 10.dp, vertical = 5.dp))
+                        Text(s, style = T.Label.copy(color = C.ink), modifier = Modifier.border(1.dp, C.line, RoundedCornerShape(14.dp)).clickable { create(s) }.padding(horizontal = 10.dp, vertical = 5.dp))
                     }
                 }
                 Btn(stringResource(R.string.open_hall), { create(name) }, Modifier.fillMaxWidth().padding(top = 12.dp), Kind.GREEN, enabled = name.isNotBlank())

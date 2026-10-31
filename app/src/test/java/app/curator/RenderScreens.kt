@@ -38,7 +38,7 @@ abstract class ScreensBase {
         c.demo = true
         c.access.value = Access.FULL
         DemoSeed.seedIfEmpty(app, c)
-        c.settings.update(change)
+        c.settings.update { change(it.copy(onboarded = true)) }
         c.settings.now()
     }
 
@@ -60,7 +60,7 @@ abstract class ScreensBase {
 
     private fun s(id: Int) = app.getString(id)
 
-    private fun screen(name: String, tab: Tab, overlay: Overlay? = null, wait: String = s(R.string.tab_halls).uppercase(), change: (Settings) -> Settings = { it }) {
+    private fun screen(name: String, tab: Tab, overlay: Overlay? = null, wait: String = s(R.string.tab_halls), change: (Settings) -> Settings = { it }) {
         val st = seed(change)
         shot(name, wait) { CuratorRoot(st, System.currentTimeMillis(), tab, overlay) }
     }
@@ -90,7 +90,7 @@ abstract class ScreensBase {
     @Test fun expert() = screen("2-expert", Tab.MUSEUM, Overlay.Crate(Source.Month(lastMonth())), s(R.string.expert_t)) {
         it.copy(flagShots = true, flagBlur = true, flagDark = true, flagDups = true)
     }
-    @Test fun card() = screen("3-card", Tab.MUSEUM, Overlay.Crate(Source.Month(lastMonth())), s(R.string.a_keep).uppercase()) {
+    @Test fun card() = screen("3-card", Tab.MUSEUM, Overlay.Crate(Source.Month(lastMonth())), s(R.string.a_keep)) {
         it.copy(flagShots = false, flagBlur = false, flagDark = false, flagDups = false)
     }
     @Test fun halls() = screen("4-halls", Tab.HALLS)
@@ -101,7 +101,7 @@ abstract class ScreensBase {
     @Test fun wing() {
         val st = seed()
         app.container.ceremony.value = Ceremony.Wing(3)
-        shot("9-wing", s(R.string.ribbon).uppercase()) { CuratorRoot(st, System.currentTimeMillis(), Tab.MUSEUM, null) }
+        shot("9-wing", s(R.string.ribbon)) { CuratorRoot(st, System.currentTimeMillis(), Tab.MUSEUM, null) }
     }
 }
 
@@ -110,3 +110,6 @@ class RenderScreensEn : ScreensBase() { override val lang = "en" }
 
 @Config(sdk = [34], qualifiers = "ru-w411dp-h891dp-xxhdpi")
 class RenderScreensRu : ScreensBase() { override val lang = "ru" }
+
+@Config(sdk = [34], qualifiers = "ru-w411dp-h891dp-night-xxhdpi")
+class RenderScreensRuDark : ScreensBase() { override val lang = "ru-dark" }

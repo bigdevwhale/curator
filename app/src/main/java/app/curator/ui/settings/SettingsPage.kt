@@ -21,6 +21,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +39,7 @@ import app.curator.ui.Home
 import app.curator.ui.Nav
 import app.curator.ui.components.Btn
 import app.curator.ui.components.Kind
-import app.curator.ui.components.Paper
+import app.curator.ui.components.Card
 import app.curator.ui.components.TopBar
 import app.curator.ui.openUrl
 import app.curator.ui.theme.C
@@ -53,15 +56,11 @@ object Community {
 }
 
 @Composable
-private fun Chip(text: String, on: Boolean, onClick: () -> Unit) {
-    Text(text, style = T.Label.copy(color = if (on) C.paper else C.ink),
-        modifier = Modifier.background(if (on) C.green else C.paper, RoundedCornerShape(16.dp)).border(1.dp, if (on) C.green else C.paperLine, RoundedCornerShape(16.dp))
-            .clickable(onClick = onClick).padding(horizontal = 12.dp, vertical = 6.dp))
-}
+private fun Chip(text: String, on: Boolean, onClick: () -> Unit) = app.curator.ui.components.Chip(text, on, onClick)
 
 @Composable
 private fun Section(title: String, hint: String? = null) {
-    Text(title.uppercase(), style = T.Caps.copy(color = C.brassD), modifier = Modifier.padding(top = 20.dp, bottom = 4.dp))
+    Text(title.uppercase(), style = T.Caps, modifier = Modifier.padding(top = 22.dp, bottom = 6.dp))
     if (hint != null) Text(hint, style = T.Small, modifier = Modifier.padding(bottom = 8.dp))
 }
 
@@ -86,7 +85,7 @@ fun SettingsPage(h: Home, nav: Nav) {
     Column(Modifier.fillMaxSize()) {
         TopBar(stringResource(R.string.settings), null, nav::close)
         Column(Modifier.verticalScroll(rememberScrollState()).navigationBarsPadding().padding(16.dp)) {
-            Paper(Modifier.fillMaxWidth()) {
+            Card(Modifier.fillMaxWidth()) {
                 Section(stringResource(R.string.set_crate), stringResource(R.string.set_crate_hint))
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                     for (n in listOf(12, 24, 48)) Chip(n.toString(), s.crate == n) { put { it.copy(crate = n) } }
@@ -108,6 +107,12 @@ fun SettingsPage(h: Home, nav: Nav) {
                     if (on && Build.VERSION.SDK_INT >= 33) notify.launch(Manifest.permission.POST_NOTIFICATIONS) else c.remind(on)
                 }
 
+                Section(stringResource(R.string.set_theme))
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    for ((m, l) in listOf(0 to R.string.theme_system, 1 to R.string.theme_light, 2 to R.string.theme_dark))
+                        Chip(stringResource(l), s.theme == m) { put { it.copy(theme = m) } }
+                }
+
                 Section(stringResource(R.string.set_lang))
                 val cur = AppCompatDelegate.getApplicationLocales().toLanguageTags().substringBefore('-').substringBefore(',')
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -116,9 +121,10 @@ fun SettingsPage(h: Home, nav: Nav) {
                 }
 
                 Section(stringResource(R.string.privacy), stringResource(R.string.privacy_text))
+                Btn(stringResource(R.string.set_training), { put { it.copy(onboarded = false) } }, Modifier.padding(top = 8.dp), Kind.GHOST)
             }
 
-            Paper(Modifier.fillMaxWidth().padding(top = 14.dp)) {
+            Card(Modifier.fillMaxWidth().padding(top = 14.dp)) {
                 Section(stringResource(R.string.community), stringResource(R.string.community_text))
                 for ((label, sub, url) in listOf(
                     Triple(R.string.community_bug, R.string.community_bug_sub, Community.BUG),
@@ -127,7 +133,7 @@ fun SettingsPage(h: Home, nav: Nav) {
                     Triple(R.string.community_chat, R.string.community_chat_sub, Community.CHAT),
                 )) Row(Modifier.fillMaxWidth().clickable { openUrl(ctx, url) }.padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) { Text(stringResource(label), style = T.Strong); Text(stringResource(sub), style = T.Small) }
-                    Text("›", style = T.Title.copy(color = C.brassD))
+                    Icon(Icons.Rounded.ChevronRight, null, tint = C.muted)
                 }
 
                 Section(stringResource(R.string.about))

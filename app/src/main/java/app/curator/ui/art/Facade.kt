@@ -28,16 +28,15 @@ fun Facade(open: Int, modifier: Modifier = Modifier, glow: Int = -1) {
     }
 }
 
-private val stone = Color(0xFFE2D5B8)
-private val stoneLine = Color(0xFF8F6B38)
-private val column = Color(0xFFF2EAD8)
+private val stone get() = C.stone
+private val stoneLine get() = C.stoneLine
 private val dash = PathEffect.dashPathEffect(floatArrayOf(4f, 4f))
 
 private fun DrawScope.part(open: Boolean, path: Path) {
     if (open) {
         drawPath(path, stone)
-        drawPath(path, stoneLine, style = Stroke(1.5f))
-    } else drawPath(path, C.paper.copy(alpha = .4f), style = Stroke(1.2f, pathEffect = dash))
+        drawPath(path, stoneLine, style = Stroke(1.2f))
+    } else drawPath(path, C.muted.copy(alpha = .55f), style = Stroke(1f, pathEffect = dash))
 }
 
 private fun rect(x: Float, y: Float, w: Float, h: Float) = Path().apply { addRect(Rect(x, y, x + w, y + h)) }
@@ -63,19 +62,19 @@ private fun DrawScope.window(open: Boolean, x: Float, y: Float, w: Float, h: Flo
 
 private fun DrawScope.scaffold(open: Boolean, x1: Float, y1: Float, x2: Float, y2: Float) {
     if (open) return
-    val c = C.brass.copy(alpha = .45f)
+    val c = C.muted.copy(alpha = .3f)
     for (k in 0..3) { val x = x1 + k * (x2 - x1) / 3; drawLine(c, Offset(x, y1), Offset(x, y2), 1f) }
     drawLine(c, Offset(x1, y2), Offset(x2, y1), 1f)
     drawLine(c, Offset(x1, (y1 + y2) / 2), Offset(x2, (y1 + y2) / 2), 1f)
 }
 
 private fun DrawScope.halo(on: Boolean, cx: Float, cy: Float, r: Float) {
-    if (on) drawCircle(androidx.compose.ui.graphics.Brush.radialGradient(listOf(C.lamp.copy(alpha = .55f), Color.Transparent), Offset(cx, cy), r), r, Offset(cx, cy))
+    if (on) drawCircle(androidx.compose.ui.graphics.Brush.radialGradient(listOf(C.lamp.copy(alpha = .6f), Color.Transparent), Offset(cx, cy), r), r, Offset(cx, cy))
 }
 
 private fun DrawScope.building(open: Int, glow: Int) {
     fun o(i: Int) = i < open
-    drawRect(C.wallD, Offset(0f, 186f), Size(360f, 28f))
+    drawLine(C.stoneLine.copy(alpha = .5f), Offset(0f, 192.5f), Offset(360f, 192.5f), 1f)
 
     halo(glow == 1, 82f, 140f, 70f)
     halo(glow == 2, 278f, 140f, 70f)
@@ -86,8 +85,8 @@ private fun DrawScope.building(open: Int, glow: Int) {
     // 5: the sculpture garden.
     part(o(5), Path().apply { addRoundRect(androidx.compose.ui.geometry.RoundRect(6f, 160f, 40f, 186f, 10f, 10f)) })
     if (o(5)) {
-        drawRect(stone, Offset(20f, 132f), Size(6f, 28f))
-        drawCircle(stone, 6f, Offset(23f, 128f))
+        drawRect(stoneLine, Offset(20f, 132f), Size(6f, 28f), style = Stroke(1f))
+        drawCircle(stoneLine, 6f, Offset(23f, 128f), style = Stroke(1f))
     } else scaffold(false, 6f, 140f, 40f, 186f)
 
     // 1: the left wing.
@@ -115,18 +114,19 @@ private fun DrawScope.building(open: Int, glow: Int) {
     scaffold(o(3), 148f, 4f, 212f, 50f)
 
     // 0: the main block, always there.
-    drawPath(rect(122f, 80f, 116f, 100f), stone)
-    drawPath(rect(122f, 80f, 116f, 100f), stoneLine, style = Stroke(1.5f))
-    drawPath(poly(112f, 80f, 180f, 44f, 248f, 80f), stone)
-    drawPath(poly(112f, 80f, 180f, 44f, 248f, 80f), stoneLine, style = Stroke(1.5f))
-    drawRect(Color(0xFFC9B48E), Offset(122f, 80f), Size(116f, 7f))
+    for (p in listOf(rect(122f, 80f, 116f, 100f), poly(112f, 80f, 180f, 44f, 248f, 80f), rect(122f, 80f, 116f, 7f))) {
+        drawPath(p, stone)
+        drawPath(p, stoneLine, style = Stroke(1.2f))
+    }
     for (x in listOf(133f, 155f, 177f, 199f, 221f)) {
-        drawRect(column, Offset(x, 88f), Size(8f, 84f))
-        drawRect(Color(0xFFA88A5C), Offset(x, 88f), Size(8f, 84f), style = Stroke(.8f))
+        drawRect(stone, Offset(x, 88f), Size(8f, 84f))
+        drawRect(stoneLine, Offset(x, 88f), Size(8f, 84f), style = Stroke(1f))
     }
     val door = Path().apply { moveTo(170f, 180f); lineTo(170f, 150f); arcTo(Rect(170f, 140f, 190f, 160f), 180f, 180f, false); lineTo(190f, 180f); close() }
     drawPath(door, C.lamp)
-    drawCircle(Color(0xFF8F6B38), 7f, Offset(180f, 66f), style = Stroke(1.2f))
-    drawRect(Color(0xFFCDBB98), Offset(112f, 180f), Size(136f, 6f))
-    drawRect(Color(0xFFB9A680), Offset(102f, 186f), Size(156f, 6f))
+    drawCircle(stoneLine, 7f, Offset(180f, 66f), style = Stroke(1f))
+    for (r in listOf(Rect(112f, 180f, 248f, 186f), Rect(102f, 186f, 258f, 192f))) {
+        drawRect(stone, r.topLeft, r.size)
+        drawRect(stoneLine, r.topLeft, r.size, style = Stroke(1f))
+    }
 }

@@ -145,7 +145,7 @@ object DemoSeed {
 
         val described = out.count { !it.pending } + 812
         c.settings.update {
-            it.copy(onboarded = true, founded = founded, crateNo = 14, freed = 2300 * MB, writtenOff = 812, wings = 3, rank = Ranks.of(described))
+            it.copy(onboarded = false, founded = founded, crateNo = 14, freed = 2300 * MB, writtenOff = 812, wings = 3, rank = Ranks.of(described))
         }
     }
 }

@@ -55,7 +55,7 @@ import app.curator.ui.Nav
 import app.curator.ui.components.Btn
 import app.curator.ui.components.Fmt
 import app.curator.ui.components.Kind
-import app.curator.ui.components.Paper
+import app.curator.ui.components.Card
 import app.curator.ui.components.Scrim
 import app.curator.ui.components.Stamp
 import app.curator.ui.components.Thumb
@@ -106,13 +106,13 @@ fun ActScreen(h: Home, nav: Nav) {
 
     LazyVerticalGrid(GridCells.Fixed(4), contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp), modifier = Modifier.fillMaxSize()) {
         item(span = { GridItemSpan(maxLineSpan) }) {
-            Column(Modifier.fillMaxWidth().statusBarsPadding().padding(top = 18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(Modifier.fillMaxWidth().statusBarsPadding().padding(start = 4.dp, top = 18.dp)) {
                 Text(stringResource(R.string.act_form).uppercase(), style = T.Caps)
-                Text(stringResource(R.string.act_title), style = T.Hero.copy(fontSize = T.Title.fontSize * 1.15f))
+                Text(stringResource(R.string.act_title), style = T.Hero)
             }
         }
         item(span = { GridItemSpan(maxLineSpan) }) {
-            Column(Modifier.padding(top = 12.dp).background(C.paper, RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp)).padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
+            Column(Modifier.padding(top = 12.dp).background(C.surface, RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)).padding(start = 16.dp, end = 16.dp, top = 16.dp)) {
                 Text(stringResource(R.string.act_no, no), style = T.Title, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
                 Text(if (act.isEmpty()) stringResource(R.string.act_empty_sub) else pluralStringResource(R.plurals.things, act.size, Fmt.n(act.size)) + " · " + Fmt.bytes(bytes, ru),
                     style = T.Label, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
@@ -125,10 +125,10 @@ fun ActScreen(h: Home, nav: Nav) {
         items(cells.size, key = { cells[it]?.id ?: -1L - it }) { k ->
             val x = cells[k]
             val i = k % 4
-            Box(Modifier.background(C.paper).padding(3.dp)) {
+            Box(Modifier.background(C.surface).padding(3.dp)) {
                 Box(Modifier.aspectRatio(.8f).then(if (x != null) Modifier.clickable { look = x } else Modifier)) {
                     if (x != null) {
-                        Thumb(x, Modifier.fillMaxSize(), px = 240)
+                        Thumb(x, Modifier.fillMaxSize(), px = 240, shape = RoundedCornerShape(10.dp))
                         val days = ((h.now - x.decided) / 86_400_000L).toInt().coerceAtLeast(0)
                         if (days > 0) Text(pluralStringResource(R.plurals.days, days, days), style = T.Caps.copy(color = Color.White, letterSpacing = T.Caps.letterSpacing * 0f, fontSize = T.Caps.fontSize * .85f),
                             modifier = Modifier.align(Alignment.TopEnd).padding(2.dp).background(Color(0xAA000000)).padding(horizontal = 3.dp))
@@ -137,7 +137,7 @@ fun ActScreen(h: Home, nav: Nav) {
             }
         }
         item(span = { GridItemSpan(maxLineSpan) }) {
-            Column(Modifier.background(C.paper, RoundedCornerShape(bottomStart = 3.dp, bottomEnd = 3.dp)).padding(16.dp)) {
+            Column(Modifier.background(C.surface, RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)).padding(16.dp)) {
                 if (act.isNotEmpty()) {
                     Row(verticalAlignment = Alignment.Bottom) {
                         Text(stringResource(R.string.curator_sign), style = T.Label, modifier = Modifier.weight(1f))
@@ -158,14 +158,14 @@ fun ActScreen(h: Home, nav: Nav) {
 
     look?.let { x ->
         Scrim({ look = null }) {
-            Paper(Modifier.fillMaxWidth(), pad = 12.dp) {
+            Card(Modifier.fillMaxWidth(), pad = 12.dp) {
                 Thumb(x, Modifier.fillMaxWidth().aspectRatio(.8f), px = 1080, fit = true)
                 Text(Fmt.bytes(x.size, ru) + (if (x.bucket.isNotBlank()) " · " + x.bucket else ""), style = T.Label, modifier = Modifier.padding(top = 8.dp))
                 Row(Modifier.fillMaxWidth().padding(top = 10.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Btn(stringResource(R.string.return_fonds), { c.write { decide(x, Verdict.KEEP) }; look = null }, Modifier.weight(1f), Kind.GREEN)
                     Btn(stringResource(R.string.leave_in_act), { look = null }, Modifier.weight(1f), Kind.GHOST)
                 }
-                if (!x.fake) Text(stringResource(R.string.open_gallery), style = T.Label.copy(color = C.brassD), textAlign = TextAlign.Center,
+                if (!x.fake) Text(stringResource(R.string.open_gallery), style = T.Label.copy(color = C.accent), textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth().clickable { openInGallery(ctx, x) }.padding(top = 10.dp))
             }
         }

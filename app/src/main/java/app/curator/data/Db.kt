@@ -56,6 +56,10 @@ interface ItemDao {
     @Query("SELECT * FROM items WHERE $PENDING AND size >= :min ORDER BY verdict = 'LATER', size DESC LIMIT :n")
     suspend fun pendingHeavy(n: Int, min: Long = HEAVY): List<Item>
 
+    /** Four things to show on a crate's lid: those still waiting first. */
+    @Query("SELECT * FROM items WHERE month = :month AND verdict != 'ACT' ORDER BY $PENDING DESC, taken LIMIT 4")
+    suspend fun cover(month: Int): List<Item>
+
     @Query("SELECT COUNT(*) FROM items WHERE month = :month AND taken < :taken")
     suspend fun before(month: Int, taken: Long): Int
 

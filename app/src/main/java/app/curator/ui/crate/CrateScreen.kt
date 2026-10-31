@@ -25,6 +25,16 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Undo
+import androidx.compose.material.icons.outlined.Collections
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material3.Icon
+import androidx.compose.ui.unit.sp
+import app.curator.ui.components.IconBtn
+import app.curator.ui.components.soft
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -69,7 +79,7 @@ import app.curator.ui.Tab
 import app.curator.ui.components.Btn
 import app.curator.ui.components.Fmt
 import app.curator.ui.components.Kind
-import app.curator.ui.components.Paper
+import app.curator.ui.components.Card
 import app.curator.ui.components.Scrim
 import app.curator.ui.components.Stamp
 import app.curator.ui.components.Thumb
@@ -108,7 +118,7 @@ fun CrateScreen(source: Source, h: Home, nav: Nav) {
         Column(Modifier.fillMaxSize()) {
             TopBar(label, null, nav::close)
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(stringResource(R.string.expert_looks), style = T.Italic.copy(color = C.onWall), textAlign = TextAlign.Center, modifier = Modifier.padding(32.dp))
+                Text(stringResource(R.string.expert_looks), style = T.Italic.copy(color = C.muted), textAlign = TextAlign.Center, modifier = Modifier.padding(32.dp))
             }
         }
         return
@@ -226,11 +236,10 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
     Column(Modifier.fillMaxSize()) {
         TopBar(stringResource(R.string.crate_no, cr.no) + " · " + label,
             if (empty) null else stringResource(R.string.crate_cards_left, left), nav::close) {
-            Text("↶ " + stringResource(R.string.undo), style = T.Label.copy(color = C.brass),
-                modifier = Modifier.clip(RoundedCornerShape(14.dp)).border(1.dp, C.brass.copy(alpha = .5f), RoundedCornerShape(14.dp)).clickable { undo() }.padding(horizontal = 10.dp, vertical = 4.dp))
+            IconBtn(Icons.AutoMirrored.Rounded.Undo, { undo() }, desc = stringResource(R.string.undo))
         }
         Box(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)) {
-            if (empty) Text(stringResource(R.string.crate_empty), style = T.Italic.copy(color = C.onWall), textAlign = TextAlign.Center, modifier = Modifier.align(Alignment.Center))
+            if (empty) Text(stringResource(R.string.crate_empty), style = T.Italic.copy(color = C.muted), textAlign = TextAlign.Center, modifier = Modifier.align(Alignment.Center))
             deck.getOrNull(1)?.let { under ->
                 Box(Modifier.fillMaxSize().graphicsLayer { scaleX = .95f; scaleY = .95f; translationY = 14.dp.toPx(); alpha = .8f }) { CardFace(under, cr, ru, null, false, false) {} }
             }
@@ -283,19 +292,19 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
         }
         if (!empty) {
             Row(Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
-                ActBtn("✕", stringResource(R.string.a_del), C.red) { act(Dir.DEL) }
-                ActBtn("⌂", stringResource(R.string.a_hall), C.brassD) { act(Dir.HALL) }
-                ActBtn("✦", stringResource(R.string.a_ex), C.gold) { act(Dir.EX) }
-                ActBtn("✓", stringResource(R.string.a_keep), C.green) { act(Dir.KEEP) }
+                ActBtn(Icons.Rounded.Close, stringResource(R.string.a_del), C.red) { act(Dir.DEL) }
+                ActBtn(Icons.Outlined.Collections, stringResource(R.string.a_hall), C.ink2) { act(Dir.HALL) }
+                ActBtn(Icons.Rounded.Star, stringResource(R.string.a_ex), C.accent) { act(Dir.EX) }
+                ActBtn(Icons.Rounded.Check, stringResource(R.string.a_keep), C.green) { act(Dir.KEEP) }
             }
-            Text(stringResource(R.string.gestures), style = T.Label.copy(color = C.onWall.copy(alpha = .75f), fontSize = T.Label.fontSize * .9f), textAlign = TextAlign.Center,
+            Text(stringResource(R.string.gestures), style = T.Label.copy(fontSize = 12.sp), textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 16.dp, vertical = 8.dp))
         }
     }
 
     note?.let { n ->
         Box(Modifier.fillMaxSize().padding(bottom = 130.dp), contentAlignment = Alignment.BottomCenter) {
-            Text(n, style = T.Label.copy(color = C.ink), modifier = Modifier.shadow(6.dp).background(C.paper).padding(horizontal = 14.dp, vertical = 8.dp))
+            Text(n, style = T.Label.copy(color = C.bg), modifier = Modifier.clip(RoundedCornerShape(50)).background(C.ink).padding(horizontal = 16.dp, vertical = 10.dp))
         }
     }
 
@@ -320,12 +329,12 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
 }
 
 @Composable
-private fun ActBtn(glyph: String, label: String, color: Color, onClick: () -> Unit) {
-    Column(Modifier.clip(RoundedCornerShape(8.dp)).clickable(onClick = onClick).padding(4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(Modifier.size(52.dp).shadow(6.dp, CircleShape).background(C.paper, CircleShape), contentAlignment = Alignment.Center) {
-            Text(glyph, style = T.Title.copy(color = color))
+private fun ActBtn(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, color: Color, onClick: () -> Unit) {
+    Column(Modifier.clip(RoundedCornerShape(16.dp)).clickable(onClick = onClick).padding(horizontal = 8.dp, vertical = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(Modifier.size(56.dp).clip(CircleShape).background(C.surface).border(1.dp, C.line, CircleShape), contentAlignment = Alignment.Center) {
+            Icon(icon, label, tint = color, modifier = Modifier.size(26.dp))
         }
-        Text(label.uppercase(), style = T.Caps.copy(color = C.onWall, letterSpacing = T.Caps.letterSpacing * .4f), modifier = Modifier.padding(top = 4.dp))
+        Text(label, style = T.Label.copy(fontSize = 12.sp), modifier = Modifier.padding(top = 6.dp))
     }
 }
 
@@ -337,22 +346,23 @@ private fun CardFace(card: List<Item>, cr: Crate, ru: Boolean, stamp: Pair<Dir, 
     val ctx = LocalContext.current
     val x = card.first()
     Column(
-        Modifier.fillMaxSize().then(if (ex) Modifier.border(4.dp, C.gold, RoundedCornerShape(3.dp)) else Modifier)
-            .shadow(12.dp, RoundedCornerShape(3.dp)).background(C.paper, RoundedCornerShape(3.dp)).padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 10.dp)
+        Modifier.fillMaxSize().soft().clip(RoundedCornerShape(24.dp)).background(C.surface)
+            .then(if (ex) Modifier.border(3.dp, C.accent, RoundedCornerShape(24.dp)) else if (C.dark) Modifier.border(1.dp, C.line, RoundedCornerShape(24.dp)) else Modifier)
+            .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 14.dp)
     ) {
         if (card.size > 1) {
             var pick by remember(x.id) { mutableStateOf<Item?>(null) }
-            Text(stringResource(R.string.series_t, card.size), style = T.Heading)
-            Text(stringResource(R.string.series_b), style = T.Small, modifier = Modifier.padding(bottom = 8.dp))
+            Text(stringResource(R.string.series_t, card.size), style = T.Heading, modifier = Modifier.padding(start = 6.dp, top = 6.dp))
+            Text(stringResource(R.string.series_b), style = T.Small, modifier = Modifier.padding(start = 6.dp, bottom = 10.dp))
             LazyVerticalGrid(GridCells.Fixed(if (card.size <= 4) 2 else 3), Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 itemsIndexed(card, key = { _, it -> it.id }) { _, it ->
                     val on = pick?.id == it.id
-                    Box(Modifier.aspectRatio(.8f).clickable { pick = it }.then(if (on) Modifier.border(3.dp, C.gold) else Modifier)
+                    Box(Modifier.aspectRatio(.8f).clip(RoundedCornerShape(12.dp)).clickable { pick = it }.then(if (on) Modifier.border(3.dp, C.accent, RoundedCornerShape(12.dp)) else Modifier)
                         .alpha(if (pick != null && !on) .45f else 1f)) {
-                        Thumb(it, Modifier.fillMaxSize(), px = 360)
-                        if (on) Text(stringResource(R.string.original).uppercase(), style = T.Caps.copy(color = Color(0xFF2B1F10), letterSpacing = T.Caps.letterSpacing * .4f),
-                            modifier = Modifier.align(Alignment.BottomStart).padding(4.dp).background(C.gold).padding(horizontal = 5.dp))
+                        Thumb(it, Modifier.fillMaxSize(), px = 360, shape = RoundedCornerShape(12.dp))
+                        if (on) Text(stringResource(R.string.original).uppercase(), style = T.Caps.copy(color = C.onAccent, letterSpacing = T.Caps.letterSpacing * .4f),
+                            modifier = Modifier.align(Alignment.BottomStart).padding(4.dp).background(C.accent).padding(horizontal = 5.dp))
                     }
                 }
             }
@@ -363,23 +373,24 @@ private fun CardFace(card: List<Item>, cr: Crate, ru: Boolean, stamp: Pair<Dir, 
             return@Column
         }
         Box(Modifier.weight(1f).fillMaxWidth()) {
-            Thumb(x, Modifier.fillMaxSize(), px = 1080, fit = fit)
+            Thumb(x, Modifier.fillMaxSize(), px = 1080, fit = fit, shape = RoundedCornerShape(16.dp))
             stamp?.let { (d, a) ->
                 val (text, col) = when (d) {
                     Dir.DEL -> R.string.s_del to C.red
                     Dir.KEEP -> R.string.s_keep to C.green
-                    Dir.HALL -> R.string.s_hall to C.brassD
+                    Dir.HALL -> R.string.s_hall to C.accent
                     Dir.LATER -> R.string.s_later to C.muted
-                    Dir.EX -> R.string.s_ex to C.gold
+                    Dir.EX -> R.string.s_ex to C.accent
                 }
                 Stamp(stringResource(text), col, Modifier.align(Alignment.TopCenter).padding(top = 36.dp).alpha(a))
             }
         }
         val d = Dates.date(x.taken)
         val dateFmt = DateTimeFormatter.ofPattern(if (ru) "d MMMM yyyy" else "MMMM d, yyyy", ctx.locale)
-        Text(stringResource(R.string.inv_no, cr.inv[x.id] ?: ""), style = T.Strong, modifier = Modifier.padding(top = 10.dp))
+        Text(stringResource(R.string.inv_no, cr.inv[x.id] ?: "").uppercase(), style = T.Caps.copy(color = C.accent), modifier = Modifier.padding(start = 6.dp, top = 12.dp))
         Text(d.format(dateFmt) + ", " + java.time.Instant.ofEpochMilli(x.taken).atZone(Dates.zone()).format(TIME) +
-            (if (x.bucket.isNotBlank()) " · " + x.bucket else "") + " · " + Fmt.bytes(x.size, ru), style = T.Label, maxLines = 1)
+            (if (x.bucket.isNotBlank()) " · " + x.bucket else "") + " · " + Fmt.bytes(x.size, ru), style = T.Body.copy(color = C.ink2), maxLines = 1,
+            modifier = Modifier.padding(start = 6.dp, top = 2.dp))
     }
 }
 
@@ -387,13 +398,13 @@ private fun CardFace(card: List<Item>, cr: Crate, ru: Boolean, stamp: Pair<Dir, 
 private fun ExpertSheet(cr: Crate, total: Int, onDone: (Set<Long>) -> Unit) {
     val saved = remember { mutableStateListOf<Long>() }
     Scrim(null) {
-        Paper(Modifier.fillMaxWidth()) {
+        Card(Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.expert_t), style = T.Title)
             Text(stringResource(R.string.expert_b, pluralStringResource(R.plurals.things, total, total), cr.rejects.size), style = T.Small, modifier = Modifier.padding(top = 4.dp, bottom = 12.dp))
             LazyVerticalGrid(GridCells.Fixed(3), Modifier.fillMaxWidth().heightIn(max = 380.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 itemsIndexed(cr.rejects, key = { _, it -> it.first.id }) { _, (x, f) ->
                     val on = x.id in saved
-                    Box(Modifier.aspectRatio(.8f).clickable { if (on) saved.remove(x.id) else saved.add(x.id) }.then(if (on) Modifier.border(3.dp, C.green) else Modifier)) {
+                    Box(Modifier.aspectRatio(.8f).clip(RoundedCornerShape(12.dp)).clickable { if (on) saved.remove(x.id) else saved.add(x.id) }.then(if (on) Modifier.border(3.dp, C.green, RoundedCornerShape(12.dp)) else Modifier)) {
                         Thumb(x, Modifier.fillMaxSize(), px = 300)
                         Text((if (on) stringResource(R.string.rescued) else stringResource(defectName(f))).uppercase(),
                             style = T.Caps.copy(color = Color.White, letterSpacing = T.Caps.letterSpacing * .3f), textAlign = TextAlign.Center,
@@ -420,8 +431,8 @@ fun defectName(f: Int) = when {
 private fun Summary(cr: Crate, label: String, t: Tally, more: Boolean, onNext: () -> Unit, onAct: () -> Unit, onHome: () -> Unit) {
     val ru = LocalContext.current.ru
     Scrim(null) {
-        Paper(Modifier.fillMaxWidth()) {
-            Text(stringResource(R.string.sum_caps).uppercase(), style = T.Caps.copy(color = C.brassD), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+        Card(Modifier.fillMaxWidth()) {
+            Text(stringResource(R.string.sum_caps).uppercase(), style = T.Caps.copy(color = C.accent), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
             Text(stringResource(R.string.sum_t), style = T.Title, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
             Text(stringResource(R.string.crate_no, cr.no) + " · " + label, style = T.Small, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
             val cells = listOf(
@@ -431,15 +442,15 @@ private fun Summary(cr: Crate, label: String, t: Tally, more: Boolean, onNext: (
                 Fmt.bytes(t.bytes, ru) to stringResource(R.string.to_free),
             )
             for (row in cells.chunked(2)) Row(Modifier.fillMaxWidth().padding(top = 10.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                for ((big, small) in row) Column(Modifier.weight(1f).background(C.paper2, RoundedCornerShape(3.dp)).padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                for ((big, small) in row) Column(Modifier.weight(1f).background(C.surface2, RoundedCornerShape(14.dp)).padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(big, style = T.Number)
-                    Text(small.uppercase(), style = T.Caps.copy(color = C.muted, letterSpacing = T.Caps.letterSpacing * .4f), textAlign = TextAlign.Center)
+                    Text(small, style = T.Label, textAlign = TextAlign.Center)
                 }
             }
             Text(stringResource(if (t.ex > 0) R.string.sum_ex else if (t.later > 0) R.string.sum_later else R.string.sum_plain), style = T.Small,
                 textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(top = 12.dp))
             if (more) Btn(stringResource(R.string.next_crate), onNext, Modifier.fillMaxWidth().padding(top = 12.dp), Kind.GREEN)
-            if (t.act > 0) Btn(stringResource(R.string.go_sign), onAct, Modifier.fillMaxWidth().padding(top = 8.dp), Kind.BRASS)
+            if (t.act > 0) Btn(stringResource(R.string.go_sign), onAct, Modifier.fillMaxWidth().padding(top = 8.dp), Kind.ACCENT)
             Btn(stringResource(R.string.to_museum), onHome, Modifier.fillMaxWidth().padding(top = 8.dp), Kind.GHOST)
         }
     }

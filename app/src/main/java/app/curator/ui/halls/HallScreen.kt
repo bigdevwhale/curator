@@ -47,7 +47,7 @@ import app.curator.ui.Overlay
 import app.curator.ui.components.Btn
 import app.curator.ui.components.Fmt
 import app.curator.ui.components.Kind
-import app.curator.ui.components.Paper
+import app.curator.ui.components.Card
 import app.curator.ui.components.Scrim
 import app.curator.ui.components.Thumb
 import app.curator.ui.components.TopBar
@@ -83,12 +83,12 @@ fun HallScreen(id: Long, h: Home, nav: Nav) {
     Column(Modifier.fillMaxSize()) {
         TopBar(if (main) stringResource(R.string.main_hall) else hall!!.name,
             if (main) pluralStringResource(R.plurals.exhibits, xs.size, Fmt.n(xs.size)) else pluralStringResource(R.plurals.things, xs.size, Fmt.n(xs.size)), nav::close) {
-            if (!main) Text("⋯", style = T.Title.copy(color = C.brass), modifier = Modifier.clickable { menu = true }.padding(horizontal = 12.dp))
+            if (!main) Text("⋯", style = T.Title.copy(color = C.accent), modifier = Modifier.clickable { menu = true }.padding(horizontal = 12.dp))
         }
         LazyVerticalGrid(GridCells.Fixed(3), contentPadding = PaddingValues(12.dp), horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.weight(1f)) {
             if (!main) item(span = { GridItemSpan(maxLineSpan) }) {
-                Paper(Modifier.fillMaxWidth().padding(bottom = 6.dp), pad = 12.dp) {
+                Card(Modifier.fillMaxWidth().padding(bottom = 6.dp), pad = 12.dp) {
                     if (hall!!.folder != null) {
                         Text(stringResource(R.string.folder_set, "Pictures/" + hall.folder), style = T.Small)
                     } else {
@@ -102,24 +102,24 @@ fun HallScreen(id: Long, h: Home, nav: Nav) {
                 }
             }
             if (xs.isEmpty()) item(span = { GridItemSpan(maxLineSpan) }) {
-                Text(stringResource(if (main) R.string.main_empty else R.string.hall_empty), style = T.Italic.copy(color = C.onWall), textAlign = TextAlign.Center,
+                Text(stringResource(if (main) R.string.main_empty else R.string.hall_empty), style = T.Italic.copy(color = C.muted), textAlign = TextAlign.Center,
                     modifier = Modifier.padding(32.dp))
             }
             items(xs, key = { it.id }) { x ->
                 Box(Modifier.aspectRatio(.8f).clickable { look = x }) {
                     Thumb(x, Modifier.fillMaxSize(), px = 300)
-                    if (!main && x.verdict == Verdict.EXHIBIT) Text("✦", style = T.Label.copy(color = C.gold), modifier = Modifier.align(Alignment.TopEnd).padding(4.dp))
+                    if (!main && x.verdict == Verdict.EXHIBIT) Text("✦", style = T.Label.copy(color = C.accent), modifier = Modifier.align(Alignment.TopEnd).padding(4.dp))
                 }
             }
         }
     }
 
     note?.let { n ->
-        Scrim({ note = null }) { Paper { Text(n, style = T.Body); Btn(stringResource(R.string.ok), { note = null }, Modifier.fillMaxWidth().padding(top = 12.dp)) } }
+        Scrim({ note = null }) { Card { Text(n, style = T.Body); Btn(stringResource(R.string.ok), { note = null }, Modifier.fillMaxWidth().padding(top = 12.dp)) } }
     }
 
     if (menu && hall != null) Scrim({ menu = false }) {
-        Paper(Modifier.fillMaxWidth()) {
+        Card(Modifier.fillMaxWidth()) {
             Text(hall.name, style = T.Title)
             Btn(stringResource(R.string.rename), { menu = false; renaming = true }, Modifier.fillMaxWidth().padding(top = 12.dp), Kind.GHOST)
             Btn(stringResource(R.string.close_hall), { menu = false; nav.close(); c.write { deleteHall(hall) } }, Modifier.fillMaxWidth().padding(top = 8.dp), Kind.RED)
@@ -134,16 +134,16 @@ fun HallScreen(id: Long, h: Home, nav: Nav) {
 
     look?.let { x ->
         Scrim({ look = null }) {
-            Paper(Modifier.fillMaxWidth(), pad = 12.dp) {
+            Card(Modifier.fillMaxWidth(), pad = 12.dp) {
                 Thumb(x, Modifier.fillMaxWidth().aspectRatio(.8f), px = 1080, fit = true)
                 Text(Fmt.bytes(x.size, ru) + (if (x.bucket.isNotBlank()) " · " + x.bucket else ""), style = T.Label, modifier = Modifier.padding(top = 8.dp))
                 Row(Modifier.fillMaxWidth().padding(top = 10.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (x.verdict == Verdict.EXHIBIT) Btn(stringResource(R.string.unexhibit), { c.write { decide(x, Verdict.KEEP) }; look = null }, Modifier.weight(1f), Kind.GHOST)
-                    else Btn(stringResource(R.string.a_ex), { c.write { decide(x, Verdict.EXHIBIT) }; look = null }, Modifier.weight(1f), Kind.BRASS)
+                    else Btn(stringResource(R.string.a_ex), { c.write { decide(x, Verdict.EXHIBIT) }; look = null }, Modifier.weight(1f), Kind.ACCENT)
                     Btn(stringResource(R.string.a_del), { c.write { decide(x, Verdict.ACT) }; look = null }, Modifier.weight(1f), Kind.RED)
                 }
                 if (!main) Btn(stringResource(R.string.out_of_hall), { c.write { decide(x, x.verdict, null) }; look = null }, Modifier.fillMaxWidth().padding(top = 8.dp), Kind.GHOST)
-                if (!x.fake) Text(stringResource(R.string.open_gallery), style = T.Label.copy(color = C.brassD), textAlign = TextAlign.Center,
+                if (!x.fake) Text(stringResource(R.string.open_gallery), style = T.Label.copy(color = C.accent), textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth().clickable { openInGallery(ctx, x) }.padding(top = 10.dp))
             }
         }

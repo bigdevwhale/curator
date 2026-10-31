@@ -3,6 +3,17 @@ package app.curator.ui
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AccountBalance
+import androidx.compose.material.icons.outlined.Collections
+import androidx.compose.material.icons.outlined.Description
+import androidx.compose.material3.Icon
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,7 +52,7 @@ import app.curator.data.Show
 import app.curator.data.Source
 import app.curator.data.Stats
 import app.curator.ui.act.ActScreen
-import app.curator.ui.components.wallpaper
+import app.curator.ui.components.room
 import app.curator.ui.crate.CrateScreen
 import app.curator.ui.halls.HallScreen
 import app.curator.ui.halls.HallsScreen
@@ -123,7 +134,7 @@ fun CuratorRoot(s: Settings, now: Long = System.currentTimeMillis(), tab: Tab = 
     val h = Home(s, m, st, mapOf(Fund.SHOTS to shots, Fund.VIDEO to videos, Fund.CHATS to chats, Fund.HEAVY to heavy), act, halls,
         counts.associate { it.hall to it.n }, hung, exhibits, shows, chronicle, access, syncing, now)
 
-    Box(Modifier.fillMaxSize().wallpaper()) {
+    Box(Modifier.fillMaxSize().room()) {
         Column(Modifier.fillMaxSize()) {
             Box(Modifier.weight(1f)) {
                 when (nav.tab) {
@@ -135,7 +146,7 @@ fun CuratorRoot(s: Settings, now: Long = System.currentTimeMillis(), tab: Tab = 
             TabBar(nav, act.size)
         }
         if (nav.stack.isNotEmpty()) BackHandler { nav.close() }
-        for (o in nav.stack) Box(Modifier.fillMaxSize().wallpaper()) {
+        for (o in nav.stack) Box(Modifier.fillMaxSize().room()) {
             when (o) {
                 is Overlay.Crate -> CrateScreen(o.source, h, nav)
                 is Overlay.Hall -> HallScreen(o.id, h, nav)
@@ -149,16 +160,26 @@ fun CuratorRoot(s: Settings, now: Long = System.currentTimeMillis(), tab: Tab = 
 
 @Composable
 private fun TabBar(nav: Nav, act: Int) {
-    Row(Modifier.fillMaxWidth().background(C.wallD).navigationBarsPadding().padding(vertical = 6.dp), horizontalArrangement = Arrangement.SpaceAround) {
-        for ((t, num, label) in listOf(Triple(Tab.MUSEUM, "Ⅰ", R.string.tab_museum), Triple(Tab.HALLS, "Ⅱ", R.string.tab_halls), Triple(Tab.ACT, "Ⅲ", R.string.tab_act))) {
-            val on = nav.tab == t
-            val col = if (on) C.gold else C.onWall
-            Column(Modifier.weight(1f).clickable { nav.tab = t; nav.stack.clear() }.padding(vertical = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(num, style = T.Heading.copy(color = col))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(stringResource(label).uppercase(), style = T.Caps.copy(color = col, letterSpacing = T.Caps.letterSpacing * .6f))
-                    if (t == Tab.ACT && act > 0) Text(act.toString(), style = T.Caps.copy(color = androidx.compose.ui.graphics.Color.White, letterSpacing = T.Caps.letterSpacing * 0f),
-                        modifier = Modifier.padding(start = 4.dp).background(C.red, RoundedCornerShape(8.dp)).padding(horizontal = 5.dp))
+    Column(Modifier.fillMaxWidth().background(C.surface)) {
+        Box(Modifier.fillMaxWidth().height(1.dp).background(C.line))
+        Row(Modifier.fillMaxWidth().navigationBarsPadding().padding(vertical = 6.dp), horizontalArrangement = Arrangement.SpaceAround) {
+            for ((t, icon, label) in listOf(
+                Triple(Tab.MUSEUM, Icons.Outlined.AccountBalance, R.string.tab_museum),
+                Triple(Tab.HALLS, Icons.Outlined.Collections, R.string.tab_halls),
+                Triple(Tab.ACT, Icons.Outlined.Description, R.string.tab_act),
+            )) {
+                val on = nav.tab == t
+                val col = if (on) C.ink else C.muted
+                Column(Modifier.weight(1f).clickable(remember { MutableInteractionSource() }, null) { nav.tab = t; nav.stack.clear() }.padding(vertical = 2.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    Box {
+                        Box(Modifier.clip(RoundedCornerShape(50)).background(if (on) C.surface2 else Color.Transparent).padding(horizontal = 18.dp, vertical = 4.dp)) {
+                            Icon(icon, null, tint = col, modifier = Modifier.size(24.dp))
+                        }
+                        if (t == Tab.ACT && act > 0) Text(act.toString(), style = T.Caps.copy(color = Color.White, letterSpacing = 0.sp),
+                            modifier = Modifier.align(Alignment.TopEnd).background(C.red, RoundedCornerShape(50)).padding(horizontal = 5.dp, vertical = 1.dp))
+                    }
+                    Text(stringResource(label), style = T.Label.copy(color = col, fontSize = 12.sp), modifier = Modifier.padding(top = 2.dp))
                 }
             }
         }

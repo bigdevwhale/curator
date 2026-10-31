@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
@@ -46,7 +47,7 @@ fun ChronicleScreen(h: Home, nav: Nav) {
     val fmt = DateTimeFormatter.ofPattern(if (ctx.ru) "d MMM yyyy" else "MMM d, yyyy", ctx.locale)
     Column(Modifier.fillMaxSize()) {
         TopBar(stringResource(R.string.chronicle), stringResource(R.string.chronicle_sub), nav::close)
-        LazyColumn(Modifier.padding(horizontal = 16.dp).background(C.paper), contentPadding = PaddingValues(vertical = 12.dp)) {
+        LazyColumn(Modifier.padding(horizontal = 16.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(20.dp)).background(C.surface), contentPadding = PaddingValues(vertical = 12.dp)) {
             items(h.chronicle, key = { it.id }) { e ->
                 Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 7.dp)) {
                     Text(Dates.date(e.at).format(fmt), style = T.Label, modifier = Modifier.width(92.dp))
@@ -76,23 +77,23 @@ fun CeremonyView(c: Ceremony, h: Home, onDone: () -> Unit) {
     val ru = LocalContext.current.ru
     Scrim(null) {
         Column(
-            Modifier.fillMaxWidth().background(Brush.verticalGradient(listOf(C.wall, C.wallD))).padding(20.dp),
+            Modifier.fillMaxWidth().clip(androidx.compose.foundation.shape.RoundedCornerShape(28.dp)).background(C.surface).padding(22.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             when (c) {
                 is Ceremony.Wing -> {
                     Text(stringResource(R.string.freed_caps, Fmt.bytes(h.s.freed, ru)).uppercase(), style = T.Caps)
-                    Text(stringArrayResource(R.array.wing_opened)[c.index].trimEnd('.'), style = T.Title.copy(color = C.paper), textAlign = TextAlign.Center, modifier = Modifier.padding(top = 6.dp))
+                    Text(stringArrayResource(R.array.wing_opened)[c.index].trimEnd('.'), style = T.Title, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 6.dp))
                     Facade(c.index + 1, Modifier.fillMaxWidth().padding(vertical = 12.dp), glow = c.index)
-                    Text(stringArrayResource(R.array.wing_text)[c.index], style = T.Body.copy(color = C.onWall), textAlign = TextAlign.Center)
-                    Btn(stringResource(R.string.ribbon), onDone, Modifier.fillMaxWidth().padding(top = 18.dp), Kind.BRASS)
+                    Text(stringArrayResource(R.array.wing_text)[c.index], style = T.Body.copy(color = C.ink2), textAlign = TextAlign.Center)
+                    Btn(stringResource(R.string.ribbon), onDone, Modifier.fillMaxWidth().padding(top = 18.dp), Kind.ACCENT)
                 }
                 is Ceremony.Rank -> {
                     Text(stringResource(R.string.rank_caps).uppercase(), style = T.Caps)
-                    Text("✦", style = T.Hero.copy(color = C.gold), modifier = Modifier.padding(top = 8.dp))
-                    Text(stringArrayResource(R.array.ranks)[c.index], style = T.Title.copy(color = C.paper), textAlign = TextAlign.Center)
-                    Text(stringArrayResource(R.array.rank_text)[c.index], style = T.Body.copy(color = C.onWall), textAlign = TextAlign.Center, modifier = Modifier.padding(top = 10.dp))
-                    Btn(stringResource(R.string.accept), onDone, Modifier.fillMaxWidth().padding(top = 18.dp), Kind.BRASS)
+                    Text("✦", style = T.Hero.copy(color = C.accent), modifier = Modifier.padding(top = 8.dp))
+                    Text(stringArrayResource(R.array.ranks)[c.index], style = T.Title, textAlign = TextAlign.Center)
+                    Text(stringArrayResource(R.array.rank_text)[c.index], style = T.Body.copy(color = C.ink2), textAlign = TextAlign.Center, modifier = Modifier.padding(top = 10.dp))
+                    Btn(stringResource(R.string.accept), onDone, Modifier.fillMaxWidth().padding(top = 18.dp), Kind.ACCENT)
                 }
             }
         }

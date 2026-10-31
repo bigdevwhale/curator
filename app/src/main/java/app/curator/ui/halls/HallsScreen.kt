@@ -22,6 +22,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.ui.draw.clip
+import app.curator.ui.components.Card
+import app.curator.ui.components.Round
+import app.curator.ui.components.RoundS
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -56,7 +64,7 @@ import app.curator.ui.components.Btn
 import app.curator.ui.components.Caps
 import app.curator.ui.components.Fmt
 import app.curator.ui.components.Kind
-import app.curator.ui.components.Paper
+import app.curator.ui.components.Card
 import app.curator.ui.components.Scrim
 import app.curator.ui.components.Thumb
 import app.curator.ui.theme.C
@@ -78,9 +86,9 @@ fun HallsScreen(h: Home, nav: Nav) {
 
     LazyColumn(contentPadding = PaddingValues(bottom = 24.dp)) {
         item {
-            Column(Modifier.fillMaxWidth().statusBarsPadding().padding(top = 18.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(Modifier.fillMaxWidth().statusBarsPadding().padding(start = 20.dp, end = 20.dp, top = 18.dp)) {
                 Text(stringResource(R.string.halls_caps).uppercase(), style = T.Caps)
-                Text(stringResource(R.string.halls_title), style = T.Hero.copy(fontSize = T.Title.fontSize * 1.15f))
+                Text(stringResource(R.string.halls_title), style = T.Hero)
             }
             val now = byWeek[week].orEmpty().take(3)
             Poster(stringResource(if (rotunda) R.string.show_in_rotunda else R.string.show_in_hall), title, now, Modifier.padding(16.dp),
@@ -93,25 +101,28 @@ fun HallsScreen(h: Home, nav: Nav) {
                 }
             }
             Caps(stringResource(R.string.plan), right = pluralStringResource(R.plurals.halls, h.halls.size, h.halls.size))
-            Column(Modifier.padding(horizontal = 16.dp).shadow(10.dp).background(C.paper).border(3.dp, C.ink).padding(8.dp)) {
-                Room(stringResource(R.string.main_hall), pluralStringResource(R.plurals.exhibits, h.stats.exhibits, Fmt.n(h.stats.exhibits)), h.exhibits.take(4), Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Room(stringResource(R.string.main_hall), pluralStringResource(R.plurals.exhibits, h.stats.exhibits, Fmt.n(h.stats.exhibits)), h.exhibits.take(3), Modifier.fillMaxWidth(), wide = true) {
                     nav.open(Overlay.Hall(Overlay.EXHIBITS))
                 }
-                for (row in (h.halls.map { it as Any } + "+").chunked(2)) Row(Modifier.fillMaxWidth()) {
+                for (row in (h.halls.map { it as Any } + "+").chunked(2)) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     for (cell in row) {
                         if (cell is app.curator.data.Hall) {
                             val n = h.hallCounts[cell.id] ?: 0
-                            Room(cell.name, pluralStringResource(R.plurals.things, n, Fmt.n(n)), h.hung.filter { it.hall == cell.id }.take(3), Modifier.weight(1f)) {
+                            Room(cell.name, pluralStringResource(R.plurals.things, n, Fmt.n(n)), h.hung.filter { it.hall == cell.id }.take(1), Modifier.weight(1f)) {
                                 nav.open(Overlay.Hall(cell.id))
                             }
-                        } else Box(Modifier.weight(1f).heightIn(min = 104.dp).border(1.dp, C.ink.copy(alpha = .5f)).clickable { adding = true }, contentAlignment = Alignment.Center) {
-                            Text("+ " + stringResource(R.string.new_hall), style = T.Label)
+                        } else Box(Modifier.weight(1f).height(196.dp).clip(Round).border(1.5.dp, C.line, Round).clickable { adding = true }, contentAlignment = Alignment.Center) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Icon(Icons.Rounded.Add, null, tint = C.muted)
+                                Text(stringResource(R.string.new_hall), style = T.Label, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 6.dp))
+                            }
                         }
                     }
                     if (row.size == 1) Box(Modifier.weight(1f))
                 }
             }
-            Text(stringResource(R.string.halls_hint), style = T.Small.copy(color = C.onWall), textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(16.dp))
+            Text(stringResource(R.string.halls_hint), style = T.Small, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(20.dp))
         }
     }
 
@@ -128,17 +139,17 @@ fun HallsScreen(h: Home, nav: Nav) {
 @Composable
 fun Poster(where: String, title: String, xs: List<Item>, modifier: Modifier = Modifier, onTitle: (() -> Unit)? = null, onShare: (() -> Unit)? = null) {
     Column(
-        modifier.fillMaxWidth().shadow(10.dp).background(Brush.verticalGradient(listOf(Color(0xFF2A1F1A), Color(0xFF151010)))).padding(16.dp),
+        modifier.fillMaxWidth().clip(Round).background(Brush.verticalGradient(listOf(Color(0xFF2A221C), Color(0xFF141110)))).padding(18.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(where.uppercase(), style = T.Caps)
-        Text(title, style = T.Italic.copy(color = C.paper, fontSize = T.Title.fontSize), textAlign = TextAlign.Center,
+        Text(where.uppercase(), style = T.Caps.copy(color = Color(0xFFE0B25A)))
+        Text(title, style = T.Italic.copy(color = Color(0xFFF3EFE7), fontSize = T.Title.fontSize), textAlign = TextAlign.Center,
             modifier = Modifier.padding(vertical = 6.dp).then(if (onTitle != null) Modifier.clickable(onClick = onTitle) else Modifier))
-        if (xs.isEmpty()) Text(stringResource(R.string.show_empty), style = T.Small.copy(color = C.onWall), textAlign = TextAlign.Center, modifier = Modifier.padding(8.dp))
+        if (xs.isEmpty()) Text(stringResource(R.string.show_empty), style = T.Small.copy(color = Color(0xFFB9B2A6)), textAlign = TextAlign.Center, modifier = Modifier.padding(8.dp))
         else Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) { for (x in xs) Frame(x, 88.dp) }
         if (onShare != null || onTitle != null) Row(Modifier.padding(top = 12.dp), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            if (onTitle != null) Text(stringResource(R.string.show_rename).uppercase(), style = T.Caps.copy(color = C.onWall), modifier = Modifier.clickable(onClick = onTitle))
-            if (onShare != null) Text(stringResource(R.string.show_share).uppercase(), style = T.Caps.copy(color = C.gold), modifier = Modifier.clickable(onClick = onShare))
+            if (onTitle != null) Text(stringResource(R.string.show_rename).uppercase(), style = T.Caps.copy(color = Color(0xFFB9B2A6)), modifier = Modifier.clickable(onClick = onTitle))
+            if (onShare != null) Text(stringResource(R.string.show_share).uppercase(), style = T.Caps.copy(color = Color(0xFFE0B25A)), modifier = Modifier.clickable(onClick = onShare))
         }
     }
 }
@@ -153,19 +164,22 @@ fun Frame(x: Item, w: Dp) {
 
 @Composable
 private fun PastShow(s: Show, xs: List<Item>) {
-    Column(Modifier.width(170.dp).background(Color(0xFF1C1512)).padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(s.title, style = T.Italic.copy(color = C.paper, fontSize = T.Italic.fontSize * .85f), maxLines = 1, textAlign = TextAlign.Center)
+    Column(Modifier.width(170.dp).clip(RoundS).background(Color(0xFF1E1915)).padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(s.title, style = T.Italic.copy(color = Color(0xFFF3EFE7), fontSize = T.Italic.fontSize * .85f), maxLines = 1, textAlign = TextAlign.Center)
         Row(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(5.dp)) { for (x in xs.take(3)) Frame(x, 42.dp) }
     }
 }
 
 @Composable
-private fun Room(name: String, sub: String, xs: List<Item>, modifier: Modifier, onClick: () -> Unit) {
-    Column(modifier.heightIn(min = 104.dp).border(1.dp, C.ink.copy(alpha = .7f)).clickable(onClick = onClick).padding(10.dp)) {
-        Text(name, style = T.Heading, maxLines = 1)
-        Text(sub, style = T.Label)
-        Row(Modifier.padding(top = 6.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-            for (x in xs) Box(Modifier.size(34.dp, 42.dp).border(2.dp, C.brassD)) { Thumb(x, Modifier.size(34.dp, 42.dp), px = 120, badge = false) }
+private fun Room(name: String, sub: String, xs: List<Item>, modifier: Modifier, wide: Boolean = false, onClick: () -> Unit) {
+    Card(modifier, pad = 0.dp, onClick = onClick) {
+        Row(Modifier.fillMaxWidth().height(if (wide) 150.dp else 130.dp), horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+            if (xs.isEmpty()) Box(Modifier.weight(1f).fillMaxHeight().background(C.surface2))
+            for (x in xs) Thumb(x, Modifier.weight(1f).fillMaxHeight(), px = 400, badge = false)
+        }
+        Column(Modifier.padding(horizontal = 14.dp, vertical = 12.dp)) {
+            Text(name, style = T.Heading, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+            Text(sub, style = T.Label)
         }
     }
 }
@@ -174,11 +188,11 @@ private fun Room(name: String, sub: String, xs: List<Item>, modifier: Modifier, 
 fun NameDialog(title: String, initial: String, onDismiss: () -> Unit, onDone: (String) -> Unit) {
     var name by remember { mutableStateOf(initial) }
     Scrim(onDismiss) {
-        Paper(Modifier.fillMaxWidth()) {
+        Card(Modifier.fillMaxWidth()) {
             Text(title, style = T.Title)
             BasicTextField(name, { name = it.take(48) }, singleLine = true, textStyle = T.Heading, cursorBrush = SolidColor(C.ink),
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-                modifier = Modifier.fillMaxWidth().padding(top = 12.dp).border(1.dp, C.paperLine, RoundedCornerShape(3.dp)).padding(10.dp))
+                modifier = Modifier.fillMaxWidth().padding(top = 12.dp).border(1.dp, C.line, RoundedCornerShape(3.dp)).padding(10.dp))
             Row(Modifier.fillMaxWidth().padding(top = 14.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Btn(stringResource(R.string.cancel), onDismiss, Modifier.weight(1f), Kind.GHOST)
                 Btn(stringResource(R.string.save), { if (name.isNotBlank()) onDone(name.trim()) }, Modifier.weight(1f), Kind.GREEN, enabled = name.isNotBlank())

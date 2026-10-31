@@ -35,6 +35,10 @@ data class Settings(
     val flagBlur: Boolean = true,
     val flagDark: Boolean = true,
     val flagDups: Boolean = true,
+    /** 0: as the system, 1: light, 2: dark. */
+    val theme: Int = 0,
+    /** The training crate was done (or skipped). */
+    val trained: Boolean = false,
 )
 
 class SettingsStore(context: Context) {
@@ -56,6 +60,8 @@ class SettingsStore(context: Context) {
         flagBlur = this[F_BLUR] ?: true,
         flagDark = this[F_DARK] ?: true,
         flagDups = this[F_DUPS] ?: true,
+        theme = this[THEME] ?: 0,
+        trained = this[TRAINED] ?: false,
     )
 
     suspend fun now(): Settings = settings.first()
@@ -76,6 +82,8 @@ class SettingsStore(context: Context) {
             it[F_BLUR] = s.flagBlur
             it[F_DARK] = s.flagDark
             it[F_DUPS] = s.flagDups
+            it[THEME] = s.theme
+            it[TRAINED] = s.trained
         }
     }
 
@@ -93,5 +101,7 @@ class SettingsStore(context: Context) {
         val F_BLUR = booleanPreferencesKey("f_blur")
         val F_DARK = booleanPreferencesKey("f_dark")
         val F_DUPS = booleanPreferencesKey("f_dups")
+        val THEME = intPreferencesKey("theme")
+        val TRAINED = booleanPreferencesKey("trained")
     }
 }

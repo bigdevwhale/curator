@@ -95,21 +95,22 @@ private enum class G { UP, RIGHT, DOWN, LEFT, HOLD, PICK }
 /** One lesson of the training crate: a made-up thing and the gesture it teaches. */
 private class Lesson(val g: G, val title: Int, val hint: Int, val stamp: Int, val items: List<Item>)
 
-private fun fake(id: Long, art: String, seed: Int) = Item(id = id, taken = 1_700_000_000_000L + seed, month = 202401, md = 101, size = 3_000_000, seed = seed, art = art, w = 3, h = 4)
+/** Training photos are bundled stock photographs from Unsplash (see README), never the person's own. */
+private fun fake(id: Long, name: String) = Item(id = id, taken = 0, month = 202401, md = 101, size = 3_000_000, seed = 1, art = "asset:training/$name.jpg", w = 3, h = 4)
 
 private val LESSONS = listOf(
-    Lesson(G.UP, R.string.tr_up_t, R.string.tr_up_b, R.string.s_del, listOf(fake(-11, "blur", 4401))),
-    Lesson(G.RIGHT, R.string.tr_right_t, R.string.tr_right_b, R.string.s_keep, listOf(fake(-12, "sea", 4402))),
-    Lesson(G.DOWN, R.string.tr_down_t, R.string.tr_down_b, R.string.s_hall, listOf(fake(-13, "cat", 4403))),
-    Lesson(G.LEFT, R.string.tr_left_t, R.string.tr_left_b, R.string.s_later, listOf(fake(-14, "doc", 4404))),
-    Lesson(G.HOLD, R.string.tr_hold_t, R.string.tr_hold_b, R.string.s_ex, listOf(fake(-15, "land", 4405))),
-    Lesson(G.PICK, R.string.tr_pick_t, R.string.tr_pick_b, R.string.original, (0 until 4).map { fake(-20L - it, "face", 7_654_320 + it) }),
+    Lesson(G.UP, R.string.tr_up_t, R.string.tr_up_b, R.string.s_del, listOf(fake(-11, "up"))),
+    Lesson(G.RIGHT, R.string.tr_right_t, R.string.tr_right_b, R.string.s_keep, listOf(fake(-12, "right"))),
+    Lesson(G.DOWN, R.string.tr_down_t, R.string.tr_down_b, R.string.s_hall, listOf(fake(-13, "down"))),
+    Lesson(G.LEFT, R.string.tr_left_t, R.string.tr_left_b, R.string.s_later, listOf(fake(-14, "left"))),
+    Lesson(G.HOLD, R.string.tr_hold_t, R.string.tr_hold_b, R.string.s_ex, listOf(fake(-15, "hold"))),
+    Lesson(G.PICK, R.string.tr_pick_t, R.string.tr_pick_b, R.string.original, (0 until 4).map { fake(-20L - it, "s$it") }),
 )
 
 @Composable
-fun Onboarding() {
+fun Onboarding(start: Int = 0) {
     val c = LocalContext.current.container
-    var page by remember { mutableIntStateOf(0) }
+    var page by remember { mutableIntStateOf(start) }
     val finish = { c.write { found(); settings.update { it.copy(onboarded = true, trained = true) } } }
     val asked = askAccess { finish() }
     // The demo museum reads no real gallery, so it doesn't ask for one.

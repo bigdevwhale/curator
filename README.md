@@ -59,3 +59,5 @@ python tools/res.py                          # strings, EN and RU, from one tabl
 Kotlin, Jetpack Compose, Room, DataStore, WorkManager. Fonts: Cormorant Garamond, PT Serif, PT Sans Narrow (SIL OFL).
 
 Part of [StillCraft](https://bigdevwhale.github.io/stillcraft/). MIT licence.
+
+Photos in the training crate are from [Unsplash](https://unsplash.com/license): Steven Lewis, Roberto Nickson, Matthew Wiebe, Jeff Sheldon, Alexey Topolyanskiy, E+N Photographies.

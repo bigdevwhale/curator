@@ -138,6 +138,7 @@ fun SettingsPage(h: Home, nav: Nav) {
 
                 Section(stringResource(R.string.about))
                 Text(stringResource(R.string.about_text, BuildConfig.VERSION_NAME), style = T.Small)
+                Text(stringResource(R.string.photo_credits), style = T.Small, modifier = Modifier.padding(top = 6.dp))
                 Btn(stringResource(R.string.source), { openUrl(ctx, "https://github.com/bigdevwhale/curator") }, Modifier.padding(top = 10.dp), Kind.GHOST)
             }
         }

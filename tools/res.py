@@ -205,6 +205,7 @@ S = [
     ("community_chat_sub", "people who use these apps", "люди, которые пользуются этими приложениями"),
     ("about", "About", "О приложении"),
     ("about_text", "Curator %1$s. Free, open source, no ads.", "Куратор %1$s. Бесплатно, с открытым кодом, без рекламы."),
+    ("photo_credits", "Training crate photos: Steven Lewis, Roberto Nickson, Matthew Wiebe, Jeff Sheldon, Alexey Topolyanskiy and E+N Photographies on Unsplash.", "Фото в учебном ящике: Steven Lewis, Roberto Nickson, Matthew Wiebe, Jeff Sheldon, Alexey Topolyanskiy и E+N Photographies, Unsplash."),
     ("source", "Source code", "Исходный код"),
     ("n_channel", "Morning note", "Утренняя записка"),
     ("n_title", "Crate No. %1$d is waiting", "Ящик № %1$d ждёт вскрытия"),

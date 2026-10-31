@@ -45,3 +45,5 @@
 - **Летопись** музея и утренняя записка, если ящики ждут.
 
 Часть [StillCraft](https://bigdevwhale.github.io/stillcraft/). Лицензия MIT.
+
+Фото в учебном ящике — с [Unsplash](https://unsplash.com/license): Steven Lewis, Roberto Nickson, Matthew Wiebe, Jeff Sheldon, Alexey Topolyanskiy, E+N Photographies.

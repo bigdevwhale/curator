@@ -191,6 +191,7 @@
     <string name="community_chat_sub">люди, которые пользуются этими приложениями</string>
     <string name="about">О приложении</string>
     <string name="about_text">Куратор %1$s. Бесплатно, с открытым кодом, без рекламы.</string>
+    <string name="photo_credits">Фото в учебном ящике: Steven Lewis, Roberto Nickson, Matthew Wiebe, Jeff Sheldon, Alexey Topolyanskiy и E+N Photographies, Unsplash.</string>
     <string name="source">Исходный код</string>
     <string name="n_channel">Утренняя записка</string>
     <string name="n_title">Ящик № %1$d ждёт вскрытия</string>

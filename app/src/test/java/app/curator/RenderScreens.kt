@@ -68,6 +68,7 @@ abstract class ScreensBase {
     private fun lastMonth() = LocalDate.now().minusMonths(1).let { it.year * 100 + it.monthValue }
 
     @Test fun welcome() = shot("0-welcome", null) { Onboarding() }
+    @Test fun training() = shot("0-training", null) { Onboarding(start = 1) }
 
     /** The launcher icon as a PNG for the README and the site. */
     @Test fun logo() {

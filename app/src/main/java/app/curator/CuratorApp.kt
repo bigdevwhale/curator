@@ -99,7 +99,20 @@ class AppContainer(context: Context) {
     }
 
     /** A picture of the thing [px] wide at most: from the gallery, or drawn for a demo item. */
-    fun picture(it: Item, px: Int): Bitmap? = if (it.fake) Fake.draw(it, px) else Media.thumb(app, it, px)
+    fun picture(it: Item, px: Int): Bitmap? = when {
+        it.art.startsWith("asset:") -> asset(it.art.removePrefix("asset:"), px)
+        it.fake -> Fake.draw(it, px)
+        else -> Media.thumb(app, it, px)
+    }
+
+    /** A bundled photo (the training crate), decoded no bigger than needed. */
+    private fun asset(path: String, px: Int): Bitmap? = runCatching {
+        val o = android.graphics.BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        app.assets.open(path).use { android.graphics.BitmapFactory.decodeStream(it, null, o) }
+        var k = 1
+        while (o.outWidth / (k * 2) >= px) k *= 2
+        app.assets.open(path).use { android.graphics.BitmapFactory.decodeStream(it, null, android.graphics.BitmapFactory.Options().apply { inSampleSize = k }) }
+    }.getOrNull()
 
     private suspend fun analyze(xs: List<Item>) = withContext(Dispatchers.IO) {
         for (x in xs) {

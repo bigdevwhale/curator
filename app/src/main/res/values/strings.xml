@@ -191,6 +191,7 @@
     <string name="community_chat_sub">people who use these apps</string>
     <string name="about">About</string>
     <string name="about_text">Curator %1$s. Free, open source, no ads.</string>
+    <string name="photo_credits">Training crate photos: Steven Lewis, Roberto Nickson, Matthew Wiebe, Jeff Sheldon, Alexey Topolyanskiy and E+N Photographies on Unsplash.</string>
     <string name="source">Source code</string>
     <string name="n_channel">Morning note</string>
     <string name="n_title">Crate No. %1$d is waiting</string>

@@ -18,7 +18,7 @@
     <string name="off">off</string>
     <string name="chronicle">Chronicle</string>
     <string name="chronicle_sub">everything the museum has lived through</string>
-    <string name="in_fonds">in the stores</string>
+    <string name="in_fonds">kept</string>
     <string name="exhibits">exhibits</string>
     <string name="freed">freed</string>
     <string name="wing_next">Next to build: %1$s. Free %2$s more</string>
@@ -27,10 +27,10 @@
     <string name="partial_t">The museum sees only the photos you picked</string>
     <string name="partial_b">To sort the whole gallery, allow access to all photos and videos. Tap here.</string>
     <string name="act_waits">The act is waiting for your signature</string>
-    <string name="otd_t">Out of the stores</string>
+    <string name="otd_t">From the storeroom</string>
     <string name="otd_b">taken on this very day</string>
     <string name="otd_exhibit">one of your exhibits, taken on this very day</string>
-    <string name="funds">Special collections</string>
+    <string name="funds">Special crates</string>
     <string name="fund_shots">Screenshots</string>
     <string name="fund_video">Videos</string>
     <string name="fund_chats">From chats</string>
@@ -58,15 +58,15 @@
     <string name="d_dark">Too dark</string>
     <string name="d_dup">Duplicate</string>
     <string name="a_del">write off</string>
-    <string name="a_hall">to a hall</string>
+    <string name="a_hall">album</string>
     <string name="a_ex">exhibit</string>
     <string name="a_keep">keep</string>
     <string name="s_del">written off</string>
     <string name="s_keep">kept</string>
-    <string name="s_hall">to a hall</string>
+    <string name="s_hall">to album</string>
     <string name="s_later">later</string>
     <string name="s_ex">exhibit</string>
-    <string name="gestures">↑ write off · → keep · ↓ hall · ← later · hold: exhibit</string>
+    <string name="gestures">↑ write off · → keep · ↓ album · ← later · hold ★</string>
     <string name="later_note">Put aside: it comes back at the end of the crate</string>
     <string name="nothing_to_undo">Nothing to undo</string>
     <string name="series_first">Choose the original first</string>
@@ -76,11 +76,11 @@
     <string name="keep_all">Keep all</string>
     <string name="keep_original">Keep the original</string>
     <string name="inv_no">Inv. No. %1$s</string>
-    <string name="which_hall">Which hall?</string>
-    <string name="new_hall">Open a new hall</string>
-    <string name="new_hall_t">A new hall</string>
+    <string name="which_hall">Which album?</string>
+    <string name="new_hall">New album</string>
+    <string name="new_hall_t">New album</string>
     <string name="new_hall_hint">What is it called?</string>
-    <string name="open_hall">Open the hall</string>
+    <string name="open_hall">Create the album</string>
     <string name="sum_caps">Inventory closed</string>
     <string name="sum_t">The crate is done</string>
     <string name="to_act">into the act</string>
@@ -96,16 +96,16 @@
     <string name="act_no">Act No. %1$d</string>
     <string name="act_empty_sub">nothing to write off</string>
     <string name="act_empty">Things you write off in the crates wait here for your signature. Until you sign, nothing is deleted.</string>
-    <string name="act_hint">Nothing is deleted until you sign. Tap a thing to look at it again or take it back into the stores.</string>
+    <string name="act_hint">Nothing is deleted until you sign. Tap a thing to look at it again or keep it after all.</string>
     <string name="curator_sign">Curator</string>
     <string name="curator_name">the Curator</string>
     <string name="sign_free">Sign: free %1$s</string>
     <string name="sign_hint">The phone will ask once for all of them.</string>
     <string name="act_signed">Act signed</string>
-    <string name="return_fonds">Back to the stores</string>
+    <string name="return_fonds">Don’t delete</string>
     <string name="leave_in_act">Leave in the act</string>
     <string name="open_gallery">Open in the gallery</string>
-    <string name="halls_caps">Floor plan</string>
+    <string name="halls_caps">Your albums</string>
     <string name="halls_title">Halls</string>
     <string name="show_caps">Exhibition of the week</string>
     <string name="show_in_hall">Exhibition of the week · in the lobby</string>
@@ -116,25 +116,25 @@
     <string name="past_shows">Past exhibitions</string>
     <string name="plan">Plan</string>
     <string name="main_hall">Main hall</string>
-    <string name="halls_hint">A hall is your own album. A swipe down in a crate hangs the thing in one.</string>
-    <string name="hall_empty">The hall is empty for now. Swipe a card down in any crate to hang it here.</string>
+    <string name="halls_hint">Every hall is an album. Swipe a card down in a crate to put it into one.</string>
+    <string name="hall_empty">The album is empty for now. Swipe a card down in any crate and it lands here.</string>
     <string name="main_empty">No exhibits yet. Hold a card in a crate to make it one.</string>
-    <string name="folder_t">Make it a real album</string>
-    <string name="folder_b">The photos move to %1$s, and every gallery app shows the hall as an album.</string>
+    <string name="folder_t">Show it in the phone\'s gallery</string>
+    <string name="folder_b">The photos move to %1$s, and the phone\'s gallery shows this album.</string>
     <string name="folder_set">Lives in the folder %1$s: the gallery shows it as an album.</string>
     <string name="folder_go">Move into the folder</string>
     <string name="folder_again">Move the new ones too</string>
-    <string name="close_hall">Close the hall</string>
-    <string name="close_hall_hint">The things stay in the stores and in the gallery; only the hall goes.</string>
+    <string name="close_hall">Delete the album</string>
+    <string name="close_hall_hint">The photos stay in the gallery; only the album goes.</string>
     <string name="unexhibit">Take off the wall</string>
-    <string name="out_of_hall">Take out of the hall</string>
+    <string name="out_of_hall">Take out of the album</string>
     <string name="freed_caps">%1$s freed</string>
     <string name="ribbon">Cut the ribbon</string>
     <string name="rank_caps">A new rank</string>
     <string name="ev_founded">The museum was founded.</string>
     <string name="ev_crate">Crate “%1$s” opened:</string>
     <string name="ev_act">Act of write-off signed: %1$s, %2$s freed.</string>
-    <string name="ev_hall">Hall “%1$s” opened.</string>
+    <string name="ev_hall">Album “%1$s” created.</string>
     <string name="ev_rank">Rank given: %1$s.</string>
     <string name="ob_1t">Your gallery is a museum storeroom</string>
     <string name="ob_1b">Thousands of photos lie in crates, one per month. Open one at a time: twenty-odd cards, a couple of minutes. The space you free builds the museum, wing by wing.</string>
@@ -144,9 +144,9 @@
     <string name="tr_up_t">Swipe up</string>
     <string name="tr_up_b">A blurred shot. Up means write off: it goes into the act.</string>
     <string name="tr_right_t">Swipe right</string>
-    <string name="tr_right_b">A good one. Right means keep it in the stores.</string>
+    <string name="tr_right_b">A good one. Right means keep: it stays in the gallery as it was.</string>
     <string name="tr_down_t">Swipe down</string>
-    <string name="tr_down_b">Down hangs it in a hall: halls are your albums.</string>
+    <string name="tr_down_b">Down keeps it too, and puts it into an album: a hall of the museum.</string>
     <string name="tr_left_t">Swipe left</string>
     <string name="tr_left_b">Not sure? Left puts it aside: it comes back later.</string>
     <string name="tr_hold_t">Press and hold</string>
@@ -243,7 +243,7 @@
         <item>A hundred things described. They gave you a desk and a lamp.</item>
         <item>Five hundred things. You have keys to the storeroom now.</item>
         <item>Two thousand things. The young ones come to you for advice.</item>
-        <item>Five thousand things. Nothing enters the stores without your signature.</item>
+        <item>Five thousand things. Nothing is written off without your signature.</item>
         <item>Twelve thousand things. The museum is yours: from the cellar to the dome.</item>
     </string-array>
     <string-array name="wings">

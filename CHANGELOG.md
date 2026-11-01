@@ -10,7 +10,7 @@ then close it like any HTML comment. The release notes carry it, and the chat bo
 
 ### Changed
 - Write off is now a swipe left, «later» a swipe up.
-- The museum door is drawn in lines like the rest of the front, not filled orange.
+- The museum door is drawn in lines like the rest of the front, not filled orange, and fills the middle bay: the column that ended in a stub over it is gone.
 
 ### Fixed
 - The stamps were still cut at the corners while they faded in.

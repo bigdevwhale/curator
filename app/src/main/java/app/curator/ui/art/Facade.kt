@@ -118,15 +118,16 @@ private fun DrawScope.building(open: Int, glow: Int) {
         drawPath(p, stone)
         drawPath(p, stoneLine, style = Stroke(1.2f))
     }
-    for (x in listOf(133f, 155f, 177f, 199f, 221f)) {
+    // Four columns; the middle bay is the entrance (a fifth column used to end in a stub on top of the door).
+    for (x in listOf(133f, 155f, 199f, 221f)) {
         drawRect(stone, Offset(x, 88f), Size(8f, 84f))
         drawRect(stoneLine, Offset(x, 88f), Size(8f, 84f), style = Stroke(1f))
     }
-    val door = Path().apply { moveTo(170f, 180f); lineTo(170f, 150f); arcTo(Rect(170f, 140f, 190f, 160f), 180f, 180f, false); lineTo(190f, 180f); close() }
+    val door = Path().apply { moveTo(168f, 180f); lineTo(168f, 116f); arcTo(Rect(168f, 104f, 192f, 128f), 180f, 180f, false); lineTo(192f, 180f); close() }
     // Line art like the rest of the front (a solid lamp-coloured door was the one loud spot on it): two leaves.
     drawPath(door, stone)
     drawPath(door, stoneLine, style = Stroke(1.2f))
-    drawLine(stoneLine, Offset(180f, 140f), Offset(180f, 180f), 1f)
+    drawLine(stoneLine, Offset(180f, 104f), Offset(180f, 180f), 1f)
     drawCircle(stoneLine, 7f, Offset(180f, 66f), style = Stroke(1f))
     for (r in listOf(Rect(112f, 180f, 248f, 186f), Rect(102f, 186f, 258f, 192f))) {
         drawRect(stone, r.topLeft, r.size)

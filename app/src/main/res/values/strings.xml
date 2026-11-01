@@ -67,7 +67,7 @@
     <string name="s_hall">to album</string>
     <string name="s_later">later</string>
     <string name="s_ex">best</string>
-    <string name="gestures">↑ write off · → keep · ↓ album · ← later · hold ★</string>
+    <string name="gestures">← write off · → keep · ↓ album · ↑ later · hold ★</string>
     <string name="later_note">Put aside: it comes back at the end of the crate</string>
     <string name="nothing_to_undo">Nothing to undo</string>
     <string name="series_first">Choose the original first</string>
@@ -143,13 +143,13 @@
     <string name="tr_skip">Skip</string>
     <string name="tr_caps">Training crate · %1$d of %2$d</string>
     <string name="tr_up_t">Swipe up</string>
-    <string name="tr_up_b">A blurred shot. Up means write off: it goes into the act.</string>
+    <string name="tr_up_b">Not sure? Up puts it aside: it comes back later.</string>
     <string name="tr_right_t">Swipe right</string>
     <string name="tr_right_b">A good one. Right means keep: it stays in the gallery as it was.</string>
     <string name="tr_down_t">Swipe down</string>
     <string name="tr_down_b">Down keeps it too, and puts it into an album: a hall of the museum.</string>
     <string name="tr_left_t">Swipe left</string>
-    <string name="tr_left_b">Not sure? Left puts it aside: it comes back later.</string>
+    <string name="tr_left_b">A blurred shot. Left means write off: it goes into the act.</string>
     <string name="tr_hold_t">Press and hold</string>
     <string name="tr_hold_b">Hold your finger on your favourite shot: it joins the best and goes to the exhibition of the week.</string>
     <string name="tr_pick_t">Pick the original</string>

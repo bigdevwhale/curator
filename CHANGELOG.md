@@ -6,6 +6,22 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
+## [1.0.4] - 2026-11-01
+
+### Changed
+- Write off is now a swipe left, «later» a swipe up.
+- The museum door is drawn in lines like the rest of the front, not filled orange.
+
+### Fixed
+- The stamps were still cut at the corners while they faded in.
+- After a card flies off, the next one rises smoothly instead of jumping into place, and the card under it no longer shows up empty for a moment.
+
+<!-- tg
+Списать — теперь свайп влево, отложить — вверх.
+Карточки сменяются плавнее, штампы больше не обрезаны.
+Дверь музея больше не оранжевая.
+-->
+
 ## [1.0.3] - 2026-11-01
 
 ### Changed

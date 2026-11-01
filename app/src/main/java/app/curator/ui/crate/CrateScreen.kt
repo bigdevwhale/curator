@@ -1,6 +1,9 @@
 package app.curator.ui.crate
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.animate
+import app.curator.ui.components.preloadPicture
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -151,6 +154,8 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
     var exStamp by remember { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
     var fit by remember { mutableStateOf(false) }
+    // 0 → 1 while the card underneath rises to the top after one flew off.
+    val lift = remember { Animatable(1f) }
     val total = cr.cards.sumOf { it.size } + cr.rejects.size
     val empty = cr.cards.isEmpty() && cr.rejects.isEmpty()
     val sLater = stringResource(R.string.later_note)
@@ -171,6 +176,7 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
         tally += delta
         deck.removeAt(0)
         dx = 0f; dy = 0f; exStamp = false; fit = false
+        scope.launch { lift.snapTo(0f); lift.animateTo(1f, tween(220)) }
         c.write {
             when (d) {
                 Dir.DEL -> decide(x, Verdict.ACT)
@@ -189,16 +195,17 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
         scope.launch {
             if (d == Dir.EX) { exStamp = true; delay(380) }
             val (tx, ty) = when (d) {
-                Dir.DEL -> 0f to -2400f
+                Dir.DEL -> -1600f to 0f
                 Dir.KEEP -> 1600f to 0f
-                Dir.LATER -> -1600f to 0f
+                Dir.LATER -> 0f to -2400f
                 Dir.HALL -> 0f to 2400f
                 Dir.EX -> 1100f to -2000f
             }
             val sx = dx
             val sy = dy
-            launch { animate(sx, tx, animationSpec = tween(230)) { v, _ -> dx = v } }
-            animate(sy, ty, animationSpec = tween(230)) { v, _ -> dy = v }
+            // Speeds up as it leaves, like a card thrown off the table (an ease-out would brake off screen).
+            launch { animate(sx, tx, animationSpec = tween(260, easing = FastOutLinearInEasing)) { v, _ -> dx = v } }
+            animate(sy, ty, animationSpec = tween(260, easing = FastOutLinearInEasing)) { v, _ -> dy = v }
             commit(d, hall)
             busy = false
         }
@@ -231,6 +238,10 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
         c.write { for (x in card) decide(x, if (x in off) Verdict.ACT else Verdict.KEEP) }
     }
 
+    // The card after next gets its picture now, so it never shows up empty under the top one.
+    val ahead = deck.getOrNull(2)?.first()
+    LaunchedEffect(ahead?.id) { if (ahead != null && deck.getOrNull(2)?.size == 1) preloadPicture(ctx, ahead, 1080) }
+
     val done = deck.isEmpty() && !expert
     val left = deck.size
     Column(Modifier.fillMaxSize()) {
@@ -241,19 +252,24 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
         Box(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)) {
             if (empty) Text(stringResource(R.string.crate_empty), style = T.Italic.copy(color = C.muted), textAlign = TextAlign.Center, modifier = Modifier.align(Alignment.Center))
             deck.getOrNull(1)?.let { under ->
-                Box(Modifier.fillMaxSize().graphicsLayer { scaleX = .95f; scaleY = .95f; translationY = 14.dp.toPx(); alpha = .8f }) { CardFace(under, cr, ru, null, false, false) {} }
+                Box(Modifier.fillMaxSize().graphicsLayer { scaleX = .95f; scaleY = .95f; translationY = 14.dp.toPx(); alpha = .8f * lift.value }) { CardFace(under, cr, ru, null, false, false) {} }
             }
             deck.firstOrNull()?.let { top ->
                 val key = top.first().id
                 val dir = when {
                     exStamp -> Dir.EX
                     maxOf(kotlin.math.abs(dx), kotlin.math.abs(dy)) < 20f -> null
-                    kotlin.math.abs(dy) > kotlin.math.abs(dx) -> if (dy < 0) Dir.DEL else Dir.HALL
-                    else -> if (dx > 0) Dir.KEEP else Dir.LATER
+                    kotlin.math.abs(dy) > kotlin.math.abs(dx) -> if (dy < 0) Dir.LATER else Dir.HALL
+                    else -> if (dx > 0) Dir.KEEP else Dir.DEL
                 }
                 val strength = if (exStamp) 1f else (maxOf(kotlin.math.abs(dx), kotlin.math.abs(dy)) / 260f).coerceIn(0f, 1f)
                 Box(
-                    Modifier.fillMaxSize().graphicsLayer { translationX = dx; translationY = dy; rotationZ = dx / 40f }
+                    Modifier.fillMaxSize().graphicsLayer {
+                        val l = lift.value
+                        scaleX = .95f + .05f * l; scaleY = scaleX
+                        translationX = dx; translationY = dy + 14.dp.toPx() * (1 - l); rotationZ = dx / 40f
+                        alpha = .8f + .2f * l
+                    }
                         .then(if (top.size > 1) Modifier else Modifier.pointerInput(key) {
                             val slop = viewConfiguration.touchSlop
                             awaitEachGesture {
@@ -279,7 +295,7 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
                                         dx = tot.x; dy = tot.y
                                         drag(down.id) { ch -> tot += ch.positionChange(); ch.consume(); dx = tot.x; dy = tot.y }
                                         val far = maxOf(kotlin.math.abs(dx), kotlin.math.abs(dy)) > 120.dp.toPx()
-                                        val d = if (kotlin.math.abs(dy) > kotlin.math.abs(dx)) (if (dy < 0) Dir.DEL else Dir.HALL) else (if (dx > 0) Dir.KEEP else Dir.LATER)
+                                        val d = if (kotlin.math.abs(dy) > kotlin.math.abs(dx)) (if (dy < 0) Dir.LATER else Dir.HALL) else (if (dx > 0) Dir.KEEP else Dir.DEL)
                                         if (far) act(d) else back()
                                     }
                                 }
@@ -382,7 +398,7 @@ private fun CardFace(card: List<Item>, cr: Crate, ru: Boolean, stamp: Pair<Dir, 
                     Dir.LATER -> R.string.s_later to C.muted
                     Dir.EX -> R.string.s_ex to C.accent
                 }
-                Stamp(stringResource(text), col, Modifier.align(Alignment.TopCenter).padding(top = 36.dp).graphicsLayer { alpha = a })
+                Stamp(stringResource(text), col, Modifier.align(Alignment.TopCenter).padding(top = 36.dp), alpha = a)
             }
         }
         val d = Dates.date(x.taken)

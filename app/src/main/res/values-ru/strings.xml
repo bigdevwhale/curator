@@ -67,7 +67,7 @@
     <string name="s_hall">в альбом</string>
     <string name="s_later">отложено</string>
     <string name="s_ex">лучшее</string>
-    <string name="gestures">↑ списать · → оставить · ↓ в альбом · ← потом · удержать ★</string>
+    <string name="gestures">← списать · → оставить · ↓ в альбом · ↑ потом · удержать ★</string>
     <string name="later_note">Отложено: вернётся в конце ящика</string>
     <string name="nothing_to_undo">Возвращать нечего</string>
     <string name="series_first">Сначала выберите подлинник</string>
@@ -143,13 +143,13 @@
     <string name="tr_skip">Пропустить</string>
     <string name="tr_caps">Учебный ящик · %1$d из %2$d</string>
     <string name="tr_up_t">Смахните вверх</string>
-    <string name="tr_up_b">Смазанный кадр. Вверх — списать: он уйдёт в акт.</string>
+    <string name="tr_up_b">Не можете решить? Вверх — отложить, карточка вернётся позже.</string>
     <string name="tr_right_t">Смахните вправо</string>
     <string name="tr_right_b">Хороший кадр. Вправо — оставить: он останется в галерее, как и был.</string>
     <string name="tr_down_t">Смахните вниз</string>
     <string name="tr_down_b">Вниз — оставить и сразу положить в альбом. Альбомы здесь называются залами.</string>
     <string name="tr_left_t">Смахните влево</string>
-    <string name="tr_left_b">Не можете решить? Влево — отложить, карточка вернётся позже.</string>
+    <string name="tr_left_b">Смазанный кадр. Влево — списать: он уйдёт в акт.</string>
     <string name="tr_hold_t">Нажмите и удержите</string>
     <string name="tr_hold_b">Удержите палец на лучшем кадре — он попадёт в лучшее и на выставку недели.</string>
     <string name="tr_pick_t">Выберите подлинник</string>

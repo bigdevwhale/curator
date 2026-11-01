@@ -28,7 +28,7 @@
 - **Crates by month.** The gallery arrives as crates of arrivals, one per month, each with how much is still undescribed. Special collections cut across the months: screenshots, videos (heaviest first), pictures from chats, everything over 20 MB.
 - **The expert goes first.** Before you start, blurred shots, pocket shots in the dark, screenshots and exact duplicates are put aside on the phone itself (Laplacian sharpness, brightness, a difference hash). You confirm with one button, or tap any of them to save it.
 - **Series.** Five near-identical shots taken within a minute come as one card: pick the original, the copies go into the act.
-- **One gesture.** ↑ write off · → keep · ↓ into an album · ← later · hold to mark it as one of the best. The same as buttons, and **undo** takes back the last card.
+- **One gesture.** ← write off · → keep · ↓ into an album · ↑ later · hold to mark it as one of the best. The same as buttons, and **undo** takes back the last card.
 - **An inventory card** for every thing: its number (КП-2021/03-0147), date and time, folder and size. A tap shows the whole photo; a video plays in the phone's player.
 
 ## Nothing is lost by accident

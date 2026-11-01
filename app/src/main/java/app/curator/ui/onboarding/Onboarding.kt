@@ -98,10 +98,10 @@ private class Lesson(val g: G, val title: Int, val hint: Int, val stamp: Int, va
 private fun fake(id: Long, name: String) = Item(id = id, taken = 0, month = 202401, md = 101, size = 3_000_000, seed = 1, art = "asset:training/$name.jpg", w = 3, h = 4)
 
 private val LESSONS = listOf(
-    Lesson(G.UP, R.string.tr_up_t, R.string.tr_up_b, R.string.s_del, listOf(fake(-11, "up"))),
+    Lesson(G.LEFT, R.string.tr_left_t, R.string.tr_left_b, R.string.s_del, listOf(fake(-11, "up"))),
     Lesson(G.RIGHT, R.string.tr_right_t, R.string.tr_right_b, R.string.s_keep, listOf(fake(-12, "right"))),
     Lesson(G.DOWN, R.string.tr_down_t, R.string.tr_down_b, R.string.s_hall, listOf(fake(-13, "down"))),
-    Lesson(G.LEFT, R.string.tr_left_t, R.string.tr_left_b, R.string.s_later, listOf(fake(-14, "left"))),
+    Lesson(G.UP, R.string.tr_up_t, R.string.tr_up_b, R.string.s_later, listOf(fake(-14, "left"))),
     Lesson(G.HOLD, R.string.tr_hold_t, R.string.tr_hold_b, R.string.s_ex, listOf(fake(-15, "hold"))),
     Lesson(G.PICK, R.string.tr_pick_t, R.string.tr_pick_b, R.string.original, (0 until 4).map { fake(-20L - it, "s$it") }),
 )
@@ -250,7 +250,7 @@ private fun Training(onDone: () -> Unit) {
                     Thumb(lesson.items[0], Modifier.fillMaxSize(), px = 900, shape = RoundedCornerShape(16.dp))
                 }
                 if (stamp && lesson.g != G.PICK) Stamp(stringResource(lesson.stamp), when (lesson.g) {
-                    G.UP -> C.red; G.RIGHT -> C.green; G.HOLD -> C.accent; G.DOWN -> C.ink2; else -> C.muted
+                    G.LEFT -> C.red; G.RIGHT -> C.green; G.HOLD -> C.accent; G.DOWN -> C.ink2; else -> C.muted
                 }, Modifier.align(Alignment.TopCenter).padding(top = 32.dp))
             }
         }
@@ -260,10 +260,10 @@ private fun Training(onDone: () -> Unit) {
 @Composable
 private fun GestureIcon(g: G) {
     val (icon: ImageVector, col) = when (g) {
-        G.UP -> Icons.Rounded.ArrowUpward to C.red
+        G.UP -> Icons.Rounded.ArrowUpward to C.muted
         G.RIGHT -> Icons.AutoMirrored.Rounded.ArrowForward to C.green
         G.DOWN -> Icons.Rounded.ArrowDownward to C.ink2
-        G.LEFT -> Icons.AutoMirrored.Rounded.ArrowBack to C.muted
+        G.LEFT -> Icons.AutoMirrored.Rounded.ArrowBack to C.red
         G.HOLD -> Icons.Rounded.Star to C.accent
         G.PICK -> Icons.Rounded.TouchApp to C.accent
     }
@@ -278,7 +278,7 @@ private fun Finale(ask: () -> Unit) {
     LaunchedEffect(Unit) { delay(250); s.animateTo(1f, spring(dampingRatio = .45f, stiffness = 300f)) }
     Column(Modifier.fillMaxSize().padding(24.dp)) {
         Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-            Stamp(stringResource(R.string.act_signed), C.red, Modifier.graphicsLayer { val k = 2.2f - 1.2f * s.value; scaleX = k; scaleY = k; alpha = s.value.coerceIn(0f, 1f) })
+            Stamp(stringResource(R.string.act_signed), C.red, Modifier.graphicsLayer { val k = 2.2f - 1.2f * s.value; scaleX = k; scaleY = k }, alpha = s.value.coerceIn(0f, 1f))
         }
         Text(stringResource(R.string.ob_3t), style = T.Title)
         Text(stringResource(R.string.ob_3b), style = T.Body.copy(color = C.ink2), modifier = Modifier.padding(top = 10.dp))

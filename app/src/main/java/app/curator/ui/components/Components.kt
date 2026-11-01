@@ -30,12 +30,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
@@ -84,19 +85,24 @@ private object Pictures {
     }
 }
 
+private suspend fun loadPicture(ctx: android.content.Context, item: Item, px: Int): Bitmap? {
+    val key = "${item.id}:$px"
+    Pictures.cache.get(key)?.let { return it }
+    return withContext(Dispatchers.IO) { ctx.container.picture(item, px)?.also { Pictures.cache.put(key, it) } }
+}
+
+/** Loads a picture into the cache ahead of time, so a [Thumb] of it shows at once. */
+suspend fun preloadPicture(ctx: android.content.Context, item: Item, px: Int) { loadPicture(ctx, item, px) }
+
 /** A photo from the gallery (or the demo), loaded off the main thread and kept in a small cache. */
 @Composable
 fun Thumb(item: Item, modifier: Modifier = Modifier, px: Int = 256, fit: Boolean = false, badge: Boolean = true, shape: Shape? = null) {
     val ctx = LocalContext.current
     val key = "${item.id}:$px"
-    val bmp by produceState<ImageBitmap?>(Pictures.cache.get(key)?.asImageBitmap(), key) {
-        // The same slot can show another thing next (the next card): never keep the old picture.
-        val cached = Pictures.cache.get(key)?.asImageBitmap()
-        value = cached
-        if (cached == null) value = withContext(Dispatchers.IO) {
-            ctx.container.picture(item, px)?.also { Pictures.cache.put(key, it) }?.asImageBitmap()
-        }
-    }
+    // Keyed state: when the slot shows another thing (the next card), not even one frame of the old picture.
+    val state = remember(key) { mutableStateOf(Pictures.cache.get(key)?.asImageBitmap()) }
+    LaunchedEffect(key) { if (state.value == null) state.value = loadPicture(ctx, item, px)?.asImageBitmap() }
+    val bmp = state.value
     Box(modifier.then(if (shape != null) Modifier.clip(shape) else Modifier).background(C.photoBg)) {
         bmp?.let { Image(it, null, Modifier.fillMaxSize(), contentScale = if (fit) ContentScale.Fit else ContentScale.Crop) }
         if (badge && item.video) Text("▶ " + Fmt.duration(item.duration), style = T.Label.copy(color = Color.White, fontSize = 11.sp),
@@ -164,11 +170,14 @@ fun Bar(progress: Float, modifier: Modifier = Modifier, color: Color = C.accent,
     }
 }
 
-/** An ink stamp, a little crooked. */
+/**
+ * An ink stamp, a little crooked. Fade it with [alpha], not with a layer around it: a faded layer is drawn
+ * into a buffer of its own unrotated size, which would cut the tilted corners off.
+ */
 @Composable
-fun Stamp(text: String, color: Color, modifier: Modifier = Modifier, style: TextStyle = T.Stamp) {
+fun Stamp(text: String, color: Color, modifier: Modifier = Modifier, style: TextStyle = T.Stamp, alpha: Float = 1f) {
     Box(
-        modifier.rotate(-10f).background(Color.White.copy(alpha = .85f), RoundedCornerShape(6.dp)).border(3.dp, color, RoundedCornerShape(6.dp))
+        modifier.graphicsLayer { rotationZ = -10f; this.alpha = alpha }.background(Color.White.copy(alpha = .85f), RoundedCornerShape(6.dp)).border(3.dp, color, RoundedCornerShape(6.dp))
             .padding(horizontal = 16.dp, vertical = 2.dp)
     ) { Text(text.uppercase(), style = style.copy(color = color)) }
 }

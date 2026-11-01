@@ -123,7 +123,10 @@ private fun DrawScope.building(open: Int, glow: Int) {
         drawRect(stoneLine, Offset(x, 88f), Size(8f, 84f), style = Stroke(1f))
     }
     val door = Path().apply { moveTo(170f, 180f); lineTo(170f, 150f); arcTo(Rect(170f, 140f, 190f, 160f), 180f, 180f, false); lineTo(190f, 180f); close() }
-    drawPath(door, C.lamp)
+    // Line art like the rest of the front (a solid lamp-coloured door was the one loud spot on it): two leaves.
+    drawPath(door, stone)
+    drawPath(door, stoneLine, style = Stroke(1.2f))
+    drawLine(stoneLine, Offset(180f, 140f), Offset(180f, 180f), 1f)
     drawCircle(stoneLine, 7f, Offset(180f, 66f), style = Stroke(1f))
     for (r in listOf(Rect(112f, 180f, 248f, 186f), Rect(102f, 186f, 258f, 192f))) {
         drawRect(stone, r.topLeft, r.size)

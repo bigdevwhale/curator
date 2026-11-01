@@ -152,7 +152,7 @@ fun ActScreen(h: Home, nav: Nav) {
     }
 
     if (stamp.value > 0f) Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Stamp(stringResource(R.string.act_signed), C.red, Modifier.graphicsLayer { val k = 2.4f - 1.4f * stamp.value; scaleX = k; scaleY = k; alpha = stamp.value.coerceIn(0f, 1f) })
+        Stamp(stringResource(R.string.act_signed), C.red, Modifier.graphicsLayer { val k = 2.4f - 1.4f * stamp.value; scaleX = k; scaleY = k }, alpha = stamp.value.coerceIn(0f, 1f))
     }
 
     look?.let { x ->

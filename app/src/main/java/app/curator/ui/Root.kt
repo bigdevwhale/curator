@@ -155,6 +155,7 @@ fun CuratorRoot(s: Settings, now: Long = System.currentTimeMillis(), tab: Tab = 
             }
         }
         ceremony?.let { cer -> CeremonyView(cer, h) { c.ceremony.value = null } }
+        Player.item?.let { VideoPlayer(it) { Player.item = null } }
     }
 }
 

@@ -6,6 +6,21 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
+## [1.0.3] - 2026-11-01
+
+### Changed
+- A video plays right in the app instead of opening another app.
+- «Экспонат» is now «лучшее» (and «exhibit» is now «best»): the hold gesture, the ★ button, its stamp and the counts.
+
+### Fixed
+- The swipe stamps («ОСТАВЛЕНО», «СПИСАНО»…) were cut at the corners.
+
+<!-- tg
+Видео теперь играет прямо в Кураторе, без перехода в другое приложение.
+Штампы на карточках больше не обрезаны по краям.
+Вместо непонятного «экспонат» теперь «лучшее».
+-->
+
 ## [1.0.2] - 2026-11-01
 
 ### Changed

@@ -11,6 +11,7 @@
     <string name="ok">OK</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="close">Close</string>
     <string name="undo">undo</string>
     <string name="rename">Rename</string>
     <string name="accept">Accept</string>
@@ -19,7 +20,7 @@
     <string name="chronicle">Chronicle</string>
     <string name="chronicle_sub">everything the museum has lived through</string>
     <string name="in_fonds">kept</string>
-    <string name="exhibits">exhibits</string>
+    <string name="exhibits">best</string>
     <string name="freed">freed</string>
     <string name="wing_next">Next to build: %1$s. Free %2$s more</string>
     <string name="wings_all">The museum is fully built</string>
@@ -29,7 +30,7 @@
     <string name="act_waits">The act is waiting for your signature</string>
     <string name="otd_t">From the storeroom</string>
     <string name="otd_b">taken on this very day</string>
-    <string name="otd_exhibit">one of your exhibits, taken on this very day</string>
+    <string name="otd_exhibit">one of your best shots, taken on this very day</string>
     <string name="funds">Special crates</string>
     <string name="fund_shots">Screenshots</string>
     <string name="fund_video">Videos</string>
@@ -59,13 +60,13 @@
     <string name="d_dup">Duplicate</string>
     <string name="a_del">write off</string>
     <string name="a_hall">album</string>
-    <string name="a_ex">exhibit</string>
+    <string name="a_ex">best</string>
     <string name="a_keep">keep</string>
     <string name="s_del">written off</string>
     <string name="s_keep">kept</string>
     <string name="s_hall">to album</string>
     <string name="s_later">later</string>
-    <string name="s_ex">exhibit</string>
+    <string name="s_ex">best</string>
     <string name="gestures">↑ write off · → keep · ↓ album · ← later · hold ★</string>
     <string name="later_note">Put aside: it comes back at the end of the crate</string>
     <string name="nothing_to_undo">Nothing to undo</string>
@@ -85,9 +86,9 @@
     <string name="sum_t">The crate is done</string>
     <string name="to_act">into the act</string>
     <string name="to_free">to be freed</string>
-    <string name="sum_ex">The new exhibits already hang in the main hall and go to this week’s exhibition.</string>
+    <string name="sum_ex">Your new best shots already hang in the main hall and go to this week’s exhibition.</string>
     <string name="sum_later">What you put aside is waiting in the crate.</string>
-    <string name="sum_plain">No exhibits this time. An honest inventory too.</string>
+    <string name="sum_plain">No best shots this time. An honest inventory too.</string>
     <string name="next_crate">Next crate</string>
     <string name="go_sign">Sign the act</string>
     <string name="to_museum">Back to the museum</string>
@@ -110,7 +111,7 @@
     <string name="show_caps">Exhibition of the week</string>
     <string name="show_in_hall">Exhibition of the week · in the lobby</string>
     <string name="show_in_rotunda">Exhibition of the week · under the rotunda</string>
-    <string name="show_empty">Nothing hangs yet this week. Hold a card in a crate to make it an exhibit.</string>
+    <string name="show_empty">Nothing hangs yet this week. Hold a card in a crate to mark it as one of the best.</string>
     <string name="show_rename">Rename</string>
     <string name="show_share">Send the poster</string>
     <string name="past_shows">Past exhibitions</string>
@@ -118,7 +119,7 @@
     <string name="main_hall">Main hall</string>
     <string name="halls_hint">Every hall is an album. Swipe a card down in a crate to put it into one.</string>
     <string name="hall_empty">The album is empty for now. Swipe a card down in any crate and it lands here.</string>
-    <string name="main_empty">No exhibits yet. Hold a card in a crate to make it one.</string>
+    <string name="main_empty">No best shots yet. Hold a card in a crate to mark it as one.</string>
     <string name="folder_t">Show it in the phone\'s gallery</string>
     <string name="folder_b">The photos move to %1$s, and the phone\'s gallery shows this album.</string>
     <string name="folder_set">Lives in the folder %1$s: the gallery shows it as an album.</string>
@@ -126,7 +127,7 @@
     <string name="folder_again">Move the new ones too</string>
     <string name="close_hall">Delete the album</string>
     <string name="close_hall_hint">The photos stay in the gallery; only the album goes.</string>
-    <string name="unexhibit">Take off the wall</string>
+    <string name="unexhibit">Remove from best</string>
     <string name="out_of_hall">Take out of the album</string>
     <string name="freed_caps">%1$s freed</string>
     <string name="ribbon">Cut the ribbon</string>
@@ -150,7 +151,7 @@
     <string name="tr_left_t">Swipe left</string>
     <string name="tr_left_b">Not sure? Left puts it aside: it comes back later.</string>
     <string name="tr_hold_t">Press and hold</string>
-    <string name="tr_hold_b">The very best becomes an exhibit and goes to the exhibition of the week.</string>
+    <string name="tr_hold_b">Hold your finger on your favourite shot: it joins the best and goes to the exhibition of the week.</string>
     <string name="tr_pick_t">Pick the original</string>
     <string name="tr_pick_b">Four near-identical shots come as one card. Tap the best: the copies go into the act.</string>
     <string name="tr_miss">Not that way. Try again.</string>
@@ -200,8 +201,8 @@
         <item quantity="other">%1$s things</item>
     </plurals>
     <plurals name="exhibits">
-        <item quantity="one">%1$s exhibit</item>
-        <item quantity="other">%1$s exhibits</item>
+        <item quantity="one">%1$s best shot</item>
+        <item quantity="other">%1$s best shots</item>
     </plurals>
     <plurals name="described">
         <item quantity="one">%1$s described</item>

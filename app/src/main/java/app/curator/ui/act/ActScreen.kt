@@ -1,5 +1,6 @@
 package app.curator.ui.act
 
+import androidx.compose.ui.graphics.graphicsLayer
 import android.app.Activity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -33,9 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -153,7 +152,7 @@ fun ActScreen(h: Home, nav: Nav) {
     }
 
     if (stamp.value > 0f) Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Stamp(stringResource(R.string.act_signed), C.red, Modifier.scale(2.4f - 1.4f * stamp.value).alpha(stamp.value.coerceIn(0f, 1f)))
+        Stamp(stringResource(R.string.act_signed), C.red, Modifier.graphicsLayer { val k = 2.4f - 1.4f * stamp.value; scaleX = k; scaleY = k; alpha = stamp.value.coerceIn(0f, 1f) })
     }
 
     look?.let { x ->

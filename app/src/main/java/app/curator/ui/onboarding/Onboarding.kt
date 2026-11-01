@@ -52,7 +52,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -279,7 +278,7 @@ private fun Finale(ask: () -> Unit) {
     LaunchedEffect(Unit) { delay(250); s.animateTo(1f, spring(dampingRatio = .45f, stiffness = 300f)) }
     Column(Modifier.fillMaxSize().padding(24.dp)) {
         Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
-            Stamp(stringResource(R.string.act_signed), C.red, Modifier.scale(2.2f - 1.2f * s.value).alpha(s.value.coerceIn(0f, 1f)))
+            Stamp(stringResource(R.string.act_signed), C.red, Modifier.graphicsLayer { val k = 2.2f - 1.2f * s.value; scaleX = k; scaleY = k; alpha = s.value.coerceIn(0f, 1f) })
         }
         Text(stringResource(R.string.ob_3t), style = T.Title)
         Text(stringResource(R.string.ob_3b), style = T.Body.copy(color = C.ink2), modifier = Modifier.padding(top = 10.dp))

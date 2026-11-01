@@ -382,7 +382,7 @@ private fun CardFace(card: List<Item>, cr: Crate, ru: Boolean, stamp: Pair<Dir, 
                     Dir.LATER -> R.string.s_later to C.muted
                     Dir.EX -> R.string.s_ex to C.accent
                 }
-                Stamp(stringResource(text), col, Modifier.align(Alignment.TopCenter).padding(top = 36.dp).alpha(a))
+                Stamp(stringResource(text), col, Modifier.align(Alignment.TopCenter).padding(top = 36.dp).graphicsLayer { alpha = a })
             }
         }
         val d = Dates.date(x.taken)

@@ -11,6 +11,7 @@
     <string name="ok">Хорошо</string>
     <string name="save">Сохранить</string>
     <string name="cancel">Отмена</string>
+    <string name="close">Закрыть</string>
     <string name="undo">вернуть</string>
     <string name="rename">Переименовать</string>
     <string name="accept">Принять</string>
@@ -19,7 +20,7 @@
     <string name="chronicle">Летопись</string>
     <string name="chronicle_sub">всё, что было с музеем</string>
     <string name="in_fonds">оставлено</string>
-    <string name="exhibits">экспонатов</string>
+    <string name="exhibits">лучших</string>
     <string name="freed">освобождено</string>
     <string name="wing_next">Следующая стройка — %1$s. Осталось освободить %2$s</string>
     <string name="wings_all">Музей отстроен целиком</string>
@@ -29,7 +30,7 @@
     <string name="act_waits">Акт ждёт вашей подписи</string>
     <string name="otd_t">Из запасника</string>
     <string name="otd_b">снято в этот же день</string>
-    <string name="otd_exhibit">ваш экспонат, снятый в этот же день</string>
+    <string name="otd_exhibit">ваш лучший кадр, снятый в этот же день</string>
     <string name="funds">Особые ящики</string>
     <string name="fund_shots">Скриншоты</string>
     <string name="fund_video">Видео</string>
@@ -59,13 +60,13 @@
     <string name="d_dup">Дубль</string>
     <string name="a_del">списать</string>
     <string name="a_hall">в альбом</string>
-    <string name="a_ex">экспонат</string>
+    <string name="a_ex">лучшее</string>
     <string name="a_keep">оставить</string>
     <string name="s_del">списано</string>
     <string name="s_keep">оставлено</string>
     <string name="s_hall">в альбом</string>
     <string name="s_later">отложено</string>
-    <string name="s_ex">экспонат</string>
+    <string name="s_ex">лучшее</string>
     <string name="gestures">↑ списать · → оставить · ↓ в альбом · ← потом · удержать ★</string>
     <string name="later_note">Отложено: вернётся в конце ящика</string>
     <string name="nothing_to_undo">Возвращать нечего</string>
@@ -85,9 +86,9 @@
     <string name="sum_t">Ящик разобран</string>
     <string name="to_act">в акт</string>
     <string name="to_free">освободится</string>
-    <string name="sum_ex">Новые экспонаты уже висят в главном зале и попадут на выставку недели.</string>
+    <string name="sum_ex">Новые лучшие кадры уже висят в главном зале и попадут на выставку недели.</string>
     <string name="sum_later">Отложенное вернётся в конце ящика.</string>
-    <string name="sum_plain">На этот раз без экспонатов — бывает и так.</string>
+    <string name="sum_plain">На этот раз без лучших кадров — бывает и так.</string>
     <string name="next_crate">Следующий ящик</string>
     <string name="go_sign">Подписать акт</string>
     <string name="to_museum">В музей</string>
@@ -110,7 +111,7 @@
     <string name="show_caps">Выставка недели</string>
     <string name="show_in_hall">Выставка недели · в вестибюле</string>
     <string name="show_in_rotunda">Выставка недели · под куполом ротонды</string>
-    <string name="show_empty">На этой неделе ещё ничего не повесили. Удержите карточку в ящике — и она станет экспонатом.</string>
+    <string name="show_empty">На этой неделе ещё ничего не повесили. Удержите карточку в ящике — и она попадёт в лучшее.</string>
     <string name="show_rename">Переименовать</string>
     <string name="show_share">Отправить афишу</string>
     <string name="past_shows">Прошлые выставки</string>
@@ -118,7 +119,7 @@
     <string name="main_hall">Главный зал</string>
     <string name="halls_hint">Каждый зал — это альбом. Смахните карточку в ящике вниз, чтобы положить её в альбом.</string>
     <string name="hall_empty">Альбом пока пуст. Смахните карточку вниз в любом ящике — и она окажется здесь.</string>
-    <string name="main_empty">Экспонатов пока нет. Удержите карточку в ящике — и она станет экспонатом.</string>
+    <string name="main_empty">Лучших кадров пока нет. Удержите карточку в ящике — и она попадёт в лучшее.</string>
     <string name="folder_t">Показать в галерее телефона</string>
     <string name="folder_b">Фото переедут в папку %1$s — и галерея телефона покажет этот альбом.</string>
     <string name="folder_set">Лежит в папке %1$s — галерея показывает его как альбом.</string>
@@ -126,7 +127,7 @@
     <string name="folder_again">Переложить новые фото</string>
     <string name="close_hall">Удалить альбом</string>
     <string name="close_hall_hint">Фото останутся в галерее, исчезнет только альбом.</string>
-    <string name="unexhibit">Снять с экспозиции</string>
+    <string name="unexhibit">Убрать из лучшего</string>
     <string name="out_of_hall">Убрать из альбома</string>
     <string name="freed_caps">Освобождено %1$s</string>
     <string name="ribbon">Перерезать ленточку</string>
@@ -150,7 +151,7 @@
     <string name="tr_left_t">Смахните влево</string>
     <string name="tr_left_b">Не можете решить? Влево — отложить, карточка вернётся позже.</string>
     <string name="tr_hold_t">Нажмите и удержите</string>
-    <string name="tr_hold_b">Удержите палец на лучшем кадре — он станет экспонатом и попадёт на выставку недели.</string>
+    <string name="tr_hold_b">Удержите палец на лучшем кадре — он попадёт в лучшее и на выставку недели.</string>
     <string name="tr_pick_t">Выберите подлинник</string>
     <string name="tr_pick_b">Четыре почти одинаковых кадра приходят одной карточкой. Коснитесь лучшего — копии уйдут в акт.</string>
     <string name="tr_miss">Не туда. Попробуйте ещё раз.</string>
@@ -202,10 +203,10 @@
         <item quantity="other">%1$s предметов</item>
     </plurals>
     <plurals name="exhibits">
-        <item quantity="one">%1$s экспонат</item>
-        <item quantity="few">%1$s экспоната</item>
-        <item quantity="many">%1$s экспонатов</item>
-        <item quantity="other">%1$s экспонатов</item>
+        <item quantity="one">%1$s лучший кадр</item>
+        <item quantity="few">%1$s лучших кадра</item>
+        <item quantity="many">%1$s лучших кадров</item>
+        <item quantity="other">%1$s лучших кадров</item>
     </plurals>
     <plurals name="described">
         <item quantity="one">описан %1$s предмет</item>

@@ -79,13 +79,12 @@ fun ActScreen(h: Home, nav: Nav) {
     var look by remember { mutableStateOf<Item?>(null) }
 
     fun finish() {
-        val xs = signing
         signedName = true
         scope.launch {
             stamp.snapTo(0f)
             stamp.animateTo(1f, spring(dampingRatio = .45f, stiffness = 300f))
             delay(900)
-            c.signed(xs)
+            c.write { settleSigning() }
             delay(300)
             stamp.snapTo(0f)
             signedName = false
@@ -93,14 +92,19 @@ fun ActScreen(h: Home, nav: Nav) {
     }
 
     val ask = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { r ->
-        if (r.resultCode == Activity.RESULT_OK) finish() else signing = emptyList()
+        // Counted by what the gallery really lost, so a dialog that answers oddly costs nothing (#2).
+        if (r.resultCode == Activity.RESULT_OK) finish() else { signing = emptyList(); c.write { settleSigning() } }
     }
 
     fun sign() {
         signing = act.toList()
-        val real = act.filter { !it.fake }
-        if (real.isEmpty()) finish()
-        else runCatching { ask.launch(IntentSenderRequest.Builder(Media.deleteRequest(ctx, real)).build()) }
+        val all = act.toList()
+        val real = all.filter { !it.fake }
+        scope.launch {
+            c.beginSigning(all)
+            if (real.isEmpty()) finish()
+            else runCatching { ask.launch(IntentSenderRequest.Builder(Media.deleteRequest(ctx, real)).build()) }
+        }
     }
 
     LazyVerticalGrid(GridCells.Fixed(4), contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 24.dp), modifier = Modifier.fillMaxSize()) {

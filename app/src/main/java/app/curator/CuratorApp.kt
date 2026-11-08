@@ -71,6 +71,8 @@ class AppContainer(context: Context) {
 
     /** Brings the museum in line with the gallery: new things arrive in their crates, things deleted elsewhere leave. */
     suspend fun sync() {
+        // A signature the screen could not finish (the app was rebuilt or closed behind the dialog) is counted now.
+        settleSigning()
         if (demo) return
         val a = Media.access(app)
         access.value = a
@@ -191,14 +193,40 @@ class AppContainer(context: Context) {
         }
     }
 
+    /** The act goes to the system to delete: remember what it holds before the dialog opens (#2). */
+    suspend fun beginSigning(xs: List<Item>) {
+        settings.update { s -> s.copy(signing = s.signing + xs.map { "${it.id}:${it.size}:${if (it.video) 1 else 0}:${if (it.fake) 1 else 0}" }) }
+    }
+
+    /**
+     * Counts what the gallery really let go of from the act sent to sign, then forgets it. Called when the
+     * dialog answers, and on every return to the app, so a screen rebuilt behind the dialog or a killed app
+     * loses nothing; the demo's make-believe things are never in the gallery and count as gone.
+     */
+    private val signLock = Mutex()
+
+    suspend fun settleSigning() = signLock.withLock {
+        val pending = settings.now().signing
+        if (pending.isEmpty()) return@withLock
+        val gone = pending.mapNotNull { line ->
+            val p = line.split(':')
+            val id = p.getOrNull(0)?.toLongOrNull() ?: return@mapNotNull null
+            val size = p.getOrNull(1)?.toLongOrNull() ?: 0L
+            val video = p.getOrNull(2) == "1"
+            val fake = p.getOrNull(3) == "1"
+            if (!fake && !demo && withContext(Dispatchers.IO) { Media.exists(app, id, video) }) null else id to size
+        }
+        settings.update { it.copy(signing = it.signing - pending) }
+        if (gone.isNotEmpty()) signed(gone.map { it.first }, gone.sumOf { it.second })
+    }
+
     /** The act is signed and the gallery let go of the things: count the freed space, and maybe open a wing. */
-    suspend fun signed(xs: List<Item>) {
-        if (xs.isEmpty()) return
-        val bytes = xs.sumOf { it.size }
-        items.delete(xs.map { it.id })
-        settings.update { it.copy(freed = it.freed + bytes, writtenOff = it.writtenOff + xs.size) }
+    suspend fun signed(ids: List<Long>, bytes: Long) {
+        if (ids.isEmpty()) return
+        items.delete(ids)
+        settings.update { it.copy(freed = it.freed + bytes, writtenOff = it.writtenOff + ids.size) }
         val now = System.currentTimeMillis()
-        museum.log(Event(at = now, kind = EventKind.ACT, n = xs.size, bytes = bytes))
+        museum.log(Event(at = now, kind = EventKind.ACT, n = ids.size, bytes = bytes))
         val s = settings.now()
         val open = Wings.open(s.freed)
         if (open > s.wings) {

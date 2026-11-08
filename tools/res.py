@@ -94,7 +94,7 @@ S = [
     ("sum_caps", "Inventory closed", "Опись закрыта"),
     ("sum_t", "The crate is done", "Ящик разобран"),
     ("to_act", "into the act", "в акт"),
-    ("to_free", "to be freed", "освободится"),
+    ("to_free", "freed once the act is signed", "освободится после подписи акта"),
     ("sum_ex", "Your new best shots already hang in the main hall and go to this week’s exhibition.", "Новые лучшие кадры уже висят в главном зале и попадут на выставку недели."),
     ("sum_later", "What you put aside is waiting in the crate.", "Отложенное вернётся в конце ящика."),
     ("sum_plain", "No best shots this time. An honest inventory too.", "На этот раз без лучших кадров — бывает и так."),

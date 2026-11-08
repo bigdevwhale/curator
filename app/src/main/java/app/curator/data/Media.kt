@@ -60,7 +60,8 @@ object Media {
                     taken = taken,
                     month = d.year * 100 + d.monthValue,
                     md = d.monthValue * 100 + d.dayOfMonth,
-                    size = c.getLong(5),
+                    // Some files come without a size in the media store; ask the file itself then (#2).
+                    size = c.getLong(5).takeIf { it > 0 } ?: sizeOf(ctx, c.getLong(0), c.getInt(1) == MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),
                     w = c.getInt(6),
                     h = c.getInt(7),
                     bucket = c.getString(8) ?: "",
@@ -71,6 +72,17 @@ object Media {
         }
         return out
     }
+
+    private fun sizeOf(ctx: Context, id: Long, video: Boolean): Long = runCatching {
+        val u = ContentUris.withAppendedId(if (video) MediaStore.Video.Media.EXTERNAL_CONTENT_URI else MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+        ctx.contentResolver.openFileDescriptor(u, "r")?.use { it.statSize }
+    }.getOrNull()?.coerceAtLeast(0) ?: 0
+
+    /** True while the gallery still has this photo or video. */
+    fun exists(ctx: Context, id: Long, video: Boolean): Boolean = runCatching {
+        val u = ContentUris.withAppendedId(if (video) MediaStore.Video.Media.EXTERNAL_CONTENT_URI else MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
+        ctx.contentResolver.query(u, arrayOf(MediaStore.MediaColumns._ID), null, null, null)?.use { it.count > 0 } ?: false
+    }.getOrDefault(true)
 
     fun thumb(ctx: Context, it: Item, px: Int): Bitmap? =
         runCatching { ctx.contentResolver.loadThumbnail(uri(it), Size(px, px), null) }.getOrNull()

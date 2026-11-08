@@ -39,6 +39,11 @@ data class Settings(
     val theme: Int = 0,
     /** The training crate was done (or skipped). */
     val trained: Boolean = false,
+    /**
+     * The act sent to the system to delete, as «id:size:video» lines, until its outcome is counted (#2).
+     * Kept here and not in the screen, so a signature survives the screen being rebuilt behind the dialog.
+     */
+    val signing: Set<String> = emptySet(),
 )
 
 class SettingsStore(context: Context) {
@@ -62,6 +67,7 @@ class SettingsStore(context: Context) {
         flagDups = this[F_DUPS] ?: true,
         theme = this[THEME] ?: 0,
         trained = this[TRAINED] ?: false,
+        signing = this[SIGNING] ?: emptySet(),
     )
 
     suspend fun now(): Settings = settings.first()
@@ -84,6 +90,7 @@ class SettingsStore(context: Context) {
             it[F_DUPS] = s.flagDups
             it[THEME] = s.theme
             it[TRAINED] = s.trained
+            it[SIGNING] = s.signing
         }
     }
 
@@ -103,5 +110,6 @@ class SettingsStore(context: Context) {
         val F_DUPS = booleanPreferencesKey("f_dups")
         val THEME = intPreferencesKey("theme")
         val TRAINED = booleanPreferencesKey("trained")
+        val SIGNING = androidx.datastore.preferences.core.stringSetPreferencesKey("signing")
     }
 }

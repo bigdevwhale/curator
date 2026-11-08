@@ -85,7 +85,7 @@
     <string name="sum_caps">Inventory closed</string>
     <string name="sum_t">The crate is done</string>
     <string name="to_act">into the act</string>
-    <string name="to_free">to be freed</string>
+    <string name="to_free">freed once the act is signed</string>
     <string name="sum_ex">Your new best shots already hang in the main hall and go to this week’s exhibition.</string>
     <string name="sum_later">What you put aside is waiting in the crate.</string>
     <string name="sum_plain">No best shots this time. An honest inventory too.</string>

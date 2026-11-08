@@ -85,7 +85,7 @@
     <string name="sum_caps">Опись закрыта</string>
     <string name="sum_t">Ящик разобран</string>
     <string name="to_act">в акт</string>
-    <string name="to_free">освободится</string>
+    <string name="to_free">освободится после подписи акта</string>
     <string name="sum_ex">Новые лучшие кадры уже висят в главном зале и попадут на выставку недели.</string>
     <string name="sum_later">Отложенное вернётся в конце ящика.</string>
     <string name="sum_plain">На этот раз без лучших кадров — бывает и так.</string>

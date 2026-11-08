@@ -41,6 +41,8 @@
     <string name="by_months">by month</string>
     <string name="crate_open">open</string>
     <string name="crate_done">all described</string>
+    <string name="review">look again</string>
+    <string name="review_short">second look</string>
     <string name="crate_left">%1$s left</string>
     <string name="syncing">Taking stock of the gallery…</string>
     <string name="no_crates">No photos yet. The crates will arrive as soon as there are some.</string>
@@ -76,6 +78,8 @@
     <string name="original">original</string>
     <string name="keep_all">Keep all</string>
     <string name="keep_original">Keep the original</string>
+    <string name="write_off_all">Write them all off</string>
+    <string name="write_off_all_sure">None will be left. Write off all?</string>
     <string name="inv_no">Inv. No. %1$s</string>
     <string name="which_hall">Which album?</string>
     <string name="new_hall">New album</string>

@@ -6,6 +6,21 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
+## [1.1.0] - 2026-11-08
+
+### Added
+- A crate gone through can be looked at again: «look again» on a finished month opens what was kept there, to sort once more (#1).
+- «Write them all off» for a series of near-identical shots, with a second tap, since none will be left (#1).
+
+### Fixed
+- Signing an act sometimes counted nothing: if Android rebuilt the screen behind the delete dialog, the files went but the freed space and the museum's growth stayed where they were (#2). Now it is counted by what the gallery really lost, even after the app was closed. A file the gallery gives no size for gets it from the file itself.
+- The crate's summary says the space is freed once the act is signed.
+
+<!-- tg
+Исправлено: после подписи акта освобождённое место иногда не засчитывалось – теперь считается всегда.
+Новое: разобранный месяц можно «пересмотреть» и разобрать оставленное ещё раз, а серию похожих кадров – «списать все».
+-->
+
 ## [1.0.4] - 2026-11-01
 
 ### Changed

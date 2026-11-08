@@ -41,6 +41,8 @@
     <string name="by_months">по месяцам</string>
     <string name="crate_open">вскрыть</string>
     <string name="crate_done">всё описано</string>
+    <string name="review">пересмотреть</string>
+    <string name="review_short">второй обход</string>
     <string name="crate_left">осталось %1$s</string>
     <string name="syncing">Принимаем галерею на учёт…</string>
     <string name="no_crates">Фотографий пока нет. Как только появятся, придут и ящики.</string>
@@ -76,6 +78,8 @@
     <string name="original">подлинник</string>
     <string name="keep_all">Оставить все</string>
     <string name="keep_original">Оставить подлинник</string>
+    <string name="write_off_all">Списать все</string>
+    <string name="write_off_all_sure">Не останется ни одного. Списать все?</string>
     <string name="inv_no">Инв. № %1$s</string>
     <string name="which_hall">В какой альбом?</string>
     <string name="new_hall">Новый альбом</string>

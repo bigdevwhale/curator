@@ -92,4 +92,6 @@ enum class Fund { SHOTS, VIDEO, CHATS, HEAVY }
 sealed interface Source {
     data class Month(val month: Int) : Source
     data class Special(val fund: Fund) : Source
+    /** A month gone through once more: what was kept there before [since] (#1). */
+    data class Review(val month: Int, val since: Long) : Source
 }

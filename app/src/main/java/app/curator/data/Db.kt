@@ -44,6 +44,13 @@ interface ItemDao {
     @Query("SELECT * FROM items WHERE month = :month AND $PENDING ORDER BY verdict = 'LATER', taken LIMIT :n")
     suspend fun pendingMonth(month: Int, n: Int): List<Item>
 
+    /** Kept things of a month not looked at again since [since]: a second round through it. */
+    @Query("SELECT * FROM items WHERE month = :month AND verdict = 'KEEP' AND decided < :since ORDER BY taken LIMIT :n")
+    suspend fun keptMonth(month: Int, since: Long, n: Int): List<Item>
+
+    @Query("SELECT COUNT(*) FROM items WHERE month = :month AND verdict = 'KEEP' AND decided < :since")
+    suspend fun keptMonthCount(month: Int, since: Long): Int
+
     @Query("SELECT * FROM items WHERE $PENDING AND $SHOTS ORDER BY verdict = 'LATER', taken LIMIT :n")
     suspend fun pendingShots(n: Int): List<Item>
 

@@ -143,7 +143,9 @@ fun MuseumScreen(h: Home, nav: Nav) {
             if (h.months.isEmpty()) Text(stringResource(if (h.syncing) R.string.syncing else R.string.no_crates), style = T.Italic.copy(color = C.muted),
                 textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(24.dp))
         }
-        items(h.months, key = { it.month }) { m -> CrateRow(m, ctx.locale, ru) { nav.open(Overlay.Crate(Source.Month(m.month))) } }
+        items(h.months, key = { it.month }) { m ->
+            CrateRow(m, ctx.locale, ru, onReview = { nav.open(Overlay.Crate(Source.Review(m.month, System.currentTimeMillis()))) }) { nav.open(Overlay.Crate(Source.Month(m.month))) }
+        }
     }
 }
 
@@ -163,11 +165,11 @@ private fun Banner(icon: ImageVector, title: String, sub: String, bg: androidx.c
 
 /** A crate of one month: its lid shows four of its things. */
 @Composable
-private fun CrateRow(m: MonthRow, locale: java.util.Locale, ru: Boolean, onClick: () -> Unit) {
+private fun CrateRow(m: MonthRow, locale: java.util.Locale, ru: Boolean, onReview: () -> Unit, onClick: () -> Unit) {
     val c = LocalContext.current.container
     val done = m.pending == 0
     val cover by produceState<List<Item>>(emptyList(), m.month, m.pending) { value = c.items.cover(m.month) }
-    Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 5.dp), pad = 10.dp, onClick = if (done) null else onClick) {
+    Card(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 5.dp), pad = 10.dp, onClick = if (done) onReview else onClick) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.size(76.dp).clip(RoundS), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 for (r in 0..1) Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -185,7 +187,8 @@ private fun CrateRow(m: MonthRow, locale: java.util.Locale, ru: Boolean, onClick
                 Text(if (done) stringResource(R.string.crate_done) else stringResource(R.string.crate_left, Fmt.n(m.pending)),
                     style = T.Label.copy(color = if (done) C.green else C.muted), modifier = Modifier.padding(top = 4.dp))
             }
-            if (done) Icon(Icons.Rounded.Check, null, tint = C.green, modifier = Modifier.padding(end = 6.dp))
+            // A crate gone through can be opened again to look at what was kept (#1).
+            if (done) Text(stringResource(R.string.review), style = T.Label.copy(color = C.ink), modifier = Modifier.clip(RoundedCornerShape(50)).border(1.dp, C.line, RoundedCornerShape(50)).padding(horizontal = 12.dp, vertical = 7.dp))
             else Text(stringResource(R.string.crate_open), style = T.Label.copy(color = C.bg), modifier = Modifier.clip(RoundedCornerShape(50)).background(C.ink).padding(horizontal = 12.dp, vertical = 7.dp))
         }
     }

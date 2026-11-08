@@ -140,6 +140,7 @@ class AppContainer(context: Context) {
         val n = s.crate
         val raw = when (source) {
             is Source.Month -> items.pendingMonth(source.month, n + 30)
+            is Source.Review -> items.keptMonth(source.month, source.since, n + 30)
             is Source.Special -> when (source.fund) {
                 Fund.SHOTS -> items.pendingShots(n + 30)
                 Fund.VIDEO -> items.pendingVideos(n)

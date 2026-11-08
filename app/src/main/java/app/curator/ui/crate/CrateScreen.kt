@@ -115,6 +115,7 @@ fun CrateScreen(source: Source, h: Home, nav: Nav) {
     val label = when (source) {
         is Source.Month -> Dates.monthName(source.month, ctx.locale)
         is Source.Special -> stringResource(fundName(source.fund))
+        is Source.Review -> Dates.monthName(source.month, ctx.locale) + " · " + stringResource(R.string.review_short)
     }
     val cr = crate
     if (cr == null) {
@@ -229,8 +230,9 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
         c.write { for (x in s.card) restore(x) }
     }
 
-    fun series(card: List<Item>, keep: Item?) {
-        val off = if (keep == null) emptyList() else card.filter { it.id != keep.id }
+    /** [keep] stays and the rest go to the act; null keeps them all; [all] writes off every one (#1). */
+    fun series(card: List<Item>, keep: Item?, all: Boolean = false) {
+        val off = if (all) card else if (keep == null) emptyList() else card.filter { it.id != keep.id }
         val delta = Tally(keep = card.size - off.size, act = off.size, bytes = off.sumOf { it.size })
         hist += Step(card, delta)
         tally += delta
@@ -302,7 +304,7 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
                             }
                         })
                 ) {
-                    CardFace(top, cr, ru, dir?.let { it to strength }, fit, exStamp) { keep -> series(top, keep) }
+                    CardFace(top, cr, ru, dir?.let { it to strength }, fit, exStamp, onAll = { series(top, null, all = true) }) { keep -> series(top, keep) }
                 }
             }
         }
@@ -336,9 +338,11 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
 
     if (done && !empty) {
         LaunchedEffect(Unit) { c.closeCrate(cr.no, tally.described, label) }
+        val reviewLeft by produceState(0, cr) { (cr.source as? Source.Review)?.let { value = c.items.keptMonthCount(it.month, it.since) } }
         val more = when (val s = cr.source) {
             is Source.Month -> (h.months.firstOrNull { it.month == s.month }?.pending ?: 0) > 0
             is Source.Special -> (h.funds[s.fund]?.n ?: 0) > 0
+            is Source.Review -> reviewLeft > 0
         }
         Summary(cr, label, tally, more, onNext = next, onAct = { nav.stack.clear(); nav.tab = Tab.ACT }, onHome = nav::close)
     }
@@ -358,7 +362,7 @@ private val TIME = DateTimeFormatter.ofPattern("HH:mm")
 
 /** One card on the table: a thing on its inventory card, or a series to choose the original from. */
 @Composable
-private fun CardFace(card: List<Item>, cr: Crate, ru: Boolean, stamp: Pair<Dir, Float>?, fit: Boolean, ex: Boolean, onSeries: (Item?) -> Unit) {
+private fun CardFace(card: List<Item>, cr: Crate, ru: Boolean, stamp: Pair<Dir, Float>?, fit: Boolean, ex: Boolean, onAll: () -> Unit = {}, onSeries: (Item?) -> Unit) {
     val ctx = LocalContext.current
     val x = card.first()
     Column(
@@ -386,6 +390,10 @@ private fun CardFace(card: List<Item>, cr: Crate, ru: Boolean, stamp: Pair<Dir, 
                 Btn(stringResource(R.string.keep_all), { onSeries(null) }, Modifier.weight(1f), Kind.GHOST)
                 Btn(stringResource(R.string.keep_original), { onSeries(pick) }, Modifier.weight(1f), Kind.GREEN, enabled = pick != null)
             }
+            // Not one of them worth keeping: a second tap, since none will be left.
+            var sure by remember(x.id) { mutableStateOf(false) }
+            Btn(stringResource(if (sure) R.string.write_off_all_sure else R.string.write_off_all), { if (sure) onAll() else sure = true },
+                Modifier.fillMaxWidth().padding(top = 8.dp), Kind.GHOST)
             return@Column
         }
         Box(Modifier.weight(1f).fillMaxWidth()) {

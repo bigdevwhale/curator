@@ -103,7 +103,7 @@ class AppContainer(context: Context) {
     /** A picture of the thing [px] wide at most: from the gallery, or drawn for a demo item. */
     fun picture(it: Item, px: Int): Bitmap? = when {
         it.art.startsWith("asset:") -> asset(it.art.removePrefix("asset:"), px)
-        it.fake -> Fake.draw(it, px)
+        it.fake -> Fake.draw(it, px, app.assets)
         else -> Media.thumb(app, it, px)
     }
 

@@ -11,7 +11,7 @@ import java.time.ZoneId
 import kotlin.random.Random
 
 /**
- * `-Pdemo`: a museum a few months old over a made-up gallery drawn in code. Last month's crate is still sealed and
+ * `-Pdemo`: a museum a few months old over a made-up gallery of stock photos. Last month's crate is still sealed and
  * has a bit of everything in it: rejects for the expert, a series, a video, a duplicate. The act waiting for a
  * signature is just enough to open the Rotunda.
  */
@@ -48,8 +48,8 @@ object DemoSeed {
         val m1 = today.minusMonths(1).withDayOfMonth(1)
         var t = m1.atTime(9, 12).atZone(zone).toInstant().toEpochMilli()
         fun step() { t += (40 + r.nextInt(400)) * 60_000L }
-        val plan = listOf("land", "sea", "shot", "face", "cat", "SERIES", "blur", "food", "VIDEO", "city", "dark", "sea", "DUP", "cat",
-            "shot", "doc", "land", "face", "food", "city", "blur", "sea", "cat", "land", "face", "sea", "food", "land", "city", "cat")
+        val plan = listOf("land", "sea", "shot", "face", "dog", "SERIES", "blur", "food", "VIDEO", "city", "dark", "sea", "DUP", "dog",
+            "shot", "doc", "land", "face", "food", "city", "blur", "sea", "dog", "land", "face", "sea", "food", "land", "city", "dog")
         for (k in plan) {
             when (k) {
                 "SERIES" -> {
@@ -67,14 +67,14 @@ object DemoSeed {
             }
             step()
         }
-        for (k in 0 until 34) { out += item(t, listOf("land", "sea", "face", "cat", "food", "city")[r.nextInt(6)], chat = r.nextInt(6) == 0); step() }
+        for (k in 0 until 34) { out += item(t, listOf("land", "sea", "face", "dog", "food", "city")[r.nextInt(6)], chat = r.nextInt(6) == 0); step() }
 
         // Older months, partly described.
-        val halls = listOf(if (ru) "Семья" else "Family", if (ru) "Путешествия" else "Travels", if (ru) "Кот Бублик" else "Biscuit the cat",
+        val halls = listOf(if (ru) "Семья" else "Family", if (ru) "Путешествия" else "Travels", if (ru) "Собаки" else "Dogs",
             if (ru) "Застолья" else "Feasts", if (ru) "Город" else "The city")
         val founded = now - 92L * 86_400_000
         val hallIds = halls.mapIndexed { i, n -> c.museum.addHall(Hall(name = n, created = founded + i * 3_600_000L)) }
-        val hallOf = mapOf("face" to 0, "sea" to 1, "land" to 1, "cat" to 2, "food" to 3, "city" to 4)
+        val hallOf = mapOf("face" to 0, "sea" to 1, "land" to 1, "dog" to 2, "food" to 3, "city" to 4)
         val older = listOf(0 to (40 to .35f), 2 to (52 to 1f), 3 to (120 to .05f), 7 to (64 to 0f), 19 to (88 to .6f), 31 to (40 to 1f), 55 to (70 to .3f))
         val decidedSoFar = ArrayList<Item>()
         for ((ago, spec) in older) {
@@ -90,7 +90,7 @@ object DemoSeed {
                     roll < 8 -> item(at, "shot", size = 500_000L)
                     roll < 12 -> item(at, "blur", sharp = 3f)
                     roll < 15 -> item(at, "land", size = (30 + r.nextLong(90)) * MB, video = true)
-                    else -> item(at, listOf("land", "sea", "face", "cat", "food", "city", "doc")[r.nextInt(7)], chat = r.nextInt(7) == 0)
+                    else -> item(at, listOf("land", "sea", "face", "dog", "food", "city", "doc")[r.nextInt(7)], chat = r.nextInt(7) == 0)
                 }
             }
             val k = (n * done).toInt()
@@ -109,7 +109,7 @@ object DemoSeed {
 
         // This week's exhibits, for the exhibition.
         val week = Dates.week(now)
-        decidedSoFar.filter { it.art in setOf("sea", "face", "cat", "land") }.shuffled(r).take(3).forEachIndexed { i, x ->
+        decidedSoFar.filter { it.art in setOf("sea", "face", "dog", "land") }.shuffled(r).take(3).forEachIndexed { i, x ->
             val j = out.indexOfFirst { it.id == x.id }
             out[j] = x.copy(verdict = Verdict.EXHIBIT, decided = now - (i + 1) * 5_400_000L)
         }

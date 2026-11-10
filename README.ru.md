@@ -47,3 +47,5 @@
 Часть [StillCraft](https://bigdevwhale.github.io/stillcraft/). Лицензия MIT.
 
 Фото в учебном ящике — с [Unsplash](https://unsplash.com/license): Steven Lewis, Roberto Nickson, Matthew Wiebe, Jeff Sheldon, Alexey Topolyanskiy, E+N Photographies.
+
+Фото демо-галереи и скриншотов — тоже с [Unsplash](https://unsplash.com/license), через [Lorem Picsum](https://picsum.photos); авторы перечислены в [CREDITS.txt](app/src/demo/assets/demo/CREDITS.txt). Они попадают только в демо-сборки, в релизный APK — нет.

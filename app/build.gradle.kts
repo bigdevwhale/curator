@@ -9,7 +9,7 @@ plugins {
 
 // Release signing comes from environment variables (set by CI from repository secrets).
 // Without them the release build falls back to the debug key so it still installs.
-// `-Pdemo` builds app.curator.demo: a made-up gallery drawn in code (no real photos are read), for screenshots, next to the real install.
+// `-Pdemo` builds app.curator.demo: a made-up gallery of bundled stock photos (none from the phone is read), for screenshots, next to the real install.
 val demo = project.hasProperty("demo")
 
 val releaseKeystore = System.getenv("SIGNING_KEYSTORE_PATH")?.let(::file)?.takeIf { it.exists() }
@@ -67,6 +67,8 @@ android {
     testOptions {
         unitTests.isIncludeAndroidResources = true
     }
+    // The demo gallery's stock photos ride only in demo builds and in the screen renders, never in a release.
+    if (demo || project.hasProperty("render")) sourceSets["main"].assets.srcDir("src/demo/assets")
     lint {
         error += "MissingTranslation"
         disable += setOf("GradleDependency", "NewerVersionAvailable", "AndroidGradlePluginVersion")

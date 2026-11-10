@@ -61,3 +61,5 @@ Kotlin, Jetpack Compose, Room, DataStore, WorkManager. Fonts: Cormorant Garamond
 Part of [StillCraft](https://bigdevwhale.github.io/stillcraft/). MIT licence.
 
 Photos in the training crate are from [Unsplash](https://unsplash.com/license): Steven Lewis, Roberto Nickson, Matthew Wiebe, Jeff Sheldon, Alexey Topolyanskiy, E+N Photographies.
+
+Photos in the demo gallery and the screenshots are from [Unsplash](https://unsplash.com/license) too, via [Lorem Picsum](https://picsum.photos); the authors are listed in [CREDITS.txt](app/src/demo/assets/demo/CREDITS.txt). They go only into demo builds, never into the release APK.

@@ -11,6 +11,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -53,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.curator.container
 import app.curator.data.Item
+import app.curator.data.Media
 import app.curator.ui.theme.C
 import app.curator.ui.theme.T
 import kotlinx.coroutines.Dispatchers
@@ -80,28 +82,49 @@ object Fmt {
 }
 
 private object Pictures {
-    val cache = object : LruCache<String, Bitmap>(48 shl 20) {
-        override fun sizeOf(key: String, value: Bitmap) = value.byteCount
+    /** One picture per thing: the biggest one loaded so far, reused by every smaller slot. */
+    val cache = object : LruCache<Long, Bitmap>((Runtime.getRuntime().maxMemory() / 6).toInt().coerceIn(48 shl 20, 160 shl 20)) {
+        override fun sizeOf(key: Long, value: Bitmap) = value.byteCount
+    }
+
+    fun get(item: Item, w: Int, h: Int, fit: Boolean): Bitmap? =
+        cache.get(item.id)?.takeIf { Media.covers(it.width, it.height, w, h, fit) }
+
+    fun put(item: Item, b: Bitmap) {
+        val old = cache.get(item.id)
+        if (old == null || b.width * b.height > old.width * old.height) cache.put(item.id, b)
     }
 }
 
-private suspend fun loadPicture(ctx: android.content.Context, item: Item, px: Int): Bitmap? {
-    val key = "${item.id}:$px"
-    Pictures.cache.get(key)?.let { return it }
-    return withContext(Dispatchers.IO) { ctx.container.picture(item, px)?.also { Pictures.cache.put(key, it) } }
+private suspend fun loadPicture(ctx: android.content.Context, item: Item, w: Int, h: Int, fit: Boolean): Bitmap? {
+    Pictures.get(item, w, h, fit)?.let { return it }
+    return withContext(Dispatchers.IO) { ctx.container.picture(item, w, h, fit)?.also { Pictures.put(item, it) } }
 }
 
-/** Loads a picture into the cache ahead of time, so a [Thumb] of it shows at once. */
-suspend fun preloadPicture(ctx: android.content.Context, item: Item, px: Int) { loadPicture(ctx, item, px) }
+/** Loads a picture for a [w]×[h] box into the cache ahead of time, so a [Thumb] of it shows at once. */
+suspend fun preloadPicture(ctx: android.content.Context, item: Item, w: Int, h: Int) { loadPicture(ctx, item, w, h, false) }
 
-/** A photo from the gallery (or the demo), loaded off the main thread and kept in a small cache. */
+/** A photo from the gallery (or the demo), loaded off the main thread at the size its slot has on screen, and cached. */
 @Composable
 fun Thumb(item: Item, modifier: Modifier = Modifier, px: Int = 256, fit: Boolean = false, badge: Boolean = true, shape: Shape? = null) {
+    BoxWithConstraints(modifier) {
+        // As many pixels as the slot really has (in steps of 64, so loads stay few); [px] where a side is unbounded.
+        val step = { n: Int -> ((n + 63) / 64) * 64 }
+        val w = if (constraints.hasBoundedWidth) step(constraints.maxWidth) else px
+        val h = if (constraints.hasBoundedHeight) step(constraints.maxHeight) else px
+        Picture(item, Modifier.fillMaxSize(), w.coerceAtLeast(64), h.coerceAtLeast(64), fit, badge, shape)
+    }
+}
+
+@Composable
+private fun Picture(item: Item, modifier: Modifier, w: Int, h: Int, fit: Boolean, badge: Boolean, shape: Shape?) {
     val ctx = LocalContext.current
-    val key = "${item.id}:$px"
     // Keyed state: when the slot shows another thing (the next card), not even one frame of the old picture.
-    val state = remember(key) { mutableStateOf(Pictures.cache.get(key)?.asImageBitmap()) }
-    LaunchedEffect(key) { if (state.value == null) state.value = loadPicture(ctx, item, px)?.asImageBitmap() }
+    val state = remember(item.id) { mutableStateOf(Pictures.cache.get(item.id)?.asImageBitmap()) }
+    LaunchedEffect(item.id, w, h, fit) {
+        val now = state.value
+        if (now == null || !Media.covers(now.width, now.height, w, h, fit)) loadPicture(ctx, item, w, h, fit)?.let { state.value = it.asImageBitmap() }
+    }
     val bmp = state.value
     Box(modifier.then(if (shape != null) Modifier.clip(shape) else Modifier).background(C.photoBg)) {
         bmp?.let { Image(it, null, Modifier.fillMaxSize(), contentScale = if (fit) ContentScale.Fit else ContentScale.Crop) }

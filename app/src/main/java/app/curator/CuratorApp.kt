@@ -101,10 +101,10 @@ class AppContainer(context: Context) {
     }
 
     /** A picture of the thing [px] wide at most: from the gallery, or drawn for a demo item. */
-    fun picture(it: Item, px: Int): Bitmap? = when {
-        it.art.startsWith("asset:") -> asset(it.art.removePrefix("asset:"), px)
-        it.fake -> Fake.draw(it, px, app.assets)
-        else -> Media.thumb(app, it, px)
+    fun picture(it: Item, w: Int, h: Int = w, fit: Boolean = false): Bitmap? = when {
+        it.art.startsWith("asset:") -> asset(it.art.removePrefix("asset:"), maxOf(w, h))
+        it.fake -> Fake.draw(it, maxOf(w, h), app.assets)
+        else -> Media.thumb(app, it, w, h, fit)
     }
 
     /** A bundled photo (the training crate), decoded no bigger than needed. */

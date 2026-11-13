@@ -242,7 +242,7 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
 
     // The card after next gets its picture now, so it never shows up empty under the top one.
     val ahead = deck.getOrNull(2)?.first()
-    LaunchedEffect(ahead?.id) { if (ahead != null && deck.getOrNull(2)?.size == 1) preloadPicture(ctx, ahead, 1080) }
+    LaunchedEffect(ahead?.id) { if (ahead != null && deck.getOrNull(2)?.size == 1) ctx.resources.displayMetrics.let { m -> preloadPicture(ctx, ahead, m.widthPixels, m.heightPixels * 2 / 3) } }
 
     val done = deck.isEmpty() && !expert
     val left = deck.size

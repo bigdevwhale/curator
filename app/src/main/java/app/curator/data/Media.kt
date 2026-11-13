@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -84,8 +85,27 @@ object Media {
         ctx.contentResolver.query(u, arrayOf(MediaStore.MediaColumns._ID), null, null, null)?.use { it.count > 0 } ?: false
     }.getOrDefault(true)
 
-    fun thumb(ctx: Context, it: Item, px: Int): Bitmap? =
-        runCatching { ctx.contentResolver.loadThumbnail(uri(it), Size(px, px), null) }.getOrNull()
+    /** True when a picture of [iw]×[ih] fills a [w]×[h] box without being stretched: covering it, or (if [fit]) fitted into it. */
+    fun covers(iw: Int, ih: Int, w: Int, h: Int, fit: Boolean) = if (fit) iw >= w || ih >= h else iw >= w && ih >= h
+
+    /**
+     * A picture big enough for a [w]×[h] box ([fit] or cropped). Small ones and videos come from the system
+     * thumbnail; bigger photos are decoded from the original, scaled down by a power of two, because the system
+     * thumbnail stops at about 512 px and a full card looked smeared (#3).
+     */
+    fun thumb(ctx: Context, it: Item, w: Int, h: Int = w, fit: Boolean = false): Bitmap? {
+        val system = { runCatching { ctx.contentResolver.loadThumbnail(uri(it), Size(maxOf(w, h), maxOf(w, h)), null) }.getOrNull() }
+        if (it.video || maxOf(w, h) <= 256) return system()
+        return runCatching {
+            ImageDecoder.decodeBitmap(ImageDecoder.createSource(ctx.contentResolver, uri(it))) { d, info, _ ->
+                val iw = info.size.width; val ih = info.size.height
+                var k = 1
+                while (covers(iw / (k * 2), ih / (k * 2), w, h, fit) || maxOf(iw, ih) / k > 4096) k *= 2
+                d.setTargetSampleSize(k)
+                d.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+            }
+        }.getOrNull() ?: system()
+    }
 
     /** One system dialog to delete them all. */
     fun deleteRequest(ctx: Context, xs: List<Item>): IntentSender =

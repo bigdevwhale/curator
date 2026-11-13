@@ -6,6 +6,14 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
+## [1.1.1] - 2026-11-13
+
+- Photos are sharp again (#3). A full card in the crate or the hall now decodes the original photo, scaled down to the screen, instead of the system thumbnail that stops at about 512 px; grid tiles ask for a picture as big as the tile really is on screen.
+
+<!-- tg
+Исправлено: фотографии больше не смазанные. Карточка в ящике и в зале берёт оригинал снимка, а плитки – картинку под свой настоящий размер.
+-->
+
 ## [1.1.0] - 2026-11-08
 
 ### Added

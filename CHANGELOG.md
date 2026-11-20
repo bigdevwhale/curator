@@ -6,6 +6,20 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
+## [1.2.0] - 2026-11-20
+
+### Added
+- **A guest book (#6).** Visitors come to the museum, more with every exhibit and hall, and the front page says how many came today. After each crate gone through, and once a day, one of them writes a line about what is there now: a hall by its name, the week's exhibition, the month just sorted, the new wing.
+- **Captions (#4).** A kept photo can be captioned in its hall, «New Year 2019. Mum and me»; the caption shows under the photo.
+- **A frame on the home screen (#4).** A widget with a photo from the museum and its caption: every exhibit, everything kept, one hall, or this day in other years. It changes once a day and on a tap.
+- Release builds now carry an AAB for Google Play.
+
+<!-- tg
+В музее появилась книга отзывов: посетители приходят и пишут о ваших залах и выставках, а после каждого разобранного ящика – о новых поступлениях.
+К фотографиям можно добавлять подписи, например «Новый год 2019. Мама и я».
+Новый виджет «Рамка» показывает на главном экране фото из музея с подписью и меняет его раз в день или по нажатию.
+-->
+
 ## [1.1.1] - 2026-11-13
 
 - Photos are sharp again (#3). A full card in the crate or the hall now decodes the original photo, scaled down to the screen, instead of the system thumbnail that stops at about 512 px; grid tiles ask for a picture as big as the tile really is on screen.

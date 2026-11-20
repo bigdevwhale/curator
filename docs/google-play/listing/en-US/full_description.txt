@@ -1,0 +1,41 @@
+Your phone's gallery is the storeroom of a museum.
+
+Thousands of photos wait in crates, one crate per month. Open one at a time: twenty-odd cards, a couple of minutes. One gesture per thing: write it off, keep it, put it into an album, mark it as one of the best. Nothing is deleted until you sign the act of write-off, and the space you free builds the museum, wing by wing.
+
+Free, no ads, no account, no internet.
+
+📦 CRATES BY MONTH
+The gallery arrives as crates of arrivals, one per month, each with how much is still undescribed. Special crates cut across the months: screenshots, videos (heaviest first), pictures from chats, everything over 20 MB.
+
+🔍 THE EXPERT GOES FIRST
+Before you start, blurred shots, pocket shots in the dark, screenshots and exact duplicates are put aside. You confirm with one button, or tap any of them to save it. The expert works right on the phone.
+
+🎞️ SERIES
+Five near-identical shots taken within a minute come as one card: pick the original, the copies go into the act.
+
+👆 ONE GESTURE
+← write off · → keep · ↓ into an album · ↑ later · hold to mark it as one of the best. The same as buttons, and undo takes back the last card.
+
+🗂️ AN INVENTORY CARD
+Every thing gets its number, date and time, folder and size. A tap shows the whole photo; a video plays right in the app.
+
+✍️ THE ACT OF WRITE-OFF
+Everything written off waits in the act. Look at any thing again or keep it after all. When you sign, Android asks once for the whole act. Nothing is lost by accident.
+
+🏛️ THE MUSEUM GROWS
+The building stands in scaffolding: the wing opens at 250 MB freed, the gallery at 1 GB, the rotunda at 2.5 GB, the observatory at 5 GB, the sculpture garden at 10 GB. Each gets its ribbon. Ranks for described things, from attendant to museum director.
+
+🖼️ HALLS AND EXHIBITIONS
+Halls are your albums. A hall can become a real one: its photos move to Pictures/<hall>, and every gallery app shows it as an album. The exhibition of the week puts this week's best shots on a poster to rename and send.
+
+📜 ALSO
+• Out of the stores: a photo taken on this very day in an earlier year
+• The chronicle of everything the museum has lived through
+• A morning note while crates are waiting, if you want one
+• Light and dark themes, English and Russian
+• Free and open source (MIT)
+
+PRIVATE BY DESIGN
+Curator has no internet permission at all. No accounts, no servers, no analytics, no ads. Your photos never leave the phone.
+
+Curator is part of Stillcraft, a family of small, quiet apps without ads or accounts.

@@ -17,6 +17,26 @@
     <string name="accept">Accept</string>
     <string name="on">on</string>
     <string name="off">off</string>
+    <string name="frame_name">Frame</string>
+    <string name="frame_desc">A photo from the museum with its caption. Tap for another.</string>
+    <string name="frame_photo">A photo from the museum</string>
+    <string name="frame_empty">Hang something in the halls and it will show up here</string>
+    <string name="frame_t">What goes in the frame?</string>
+    <string name="frame_b">The photo changes once a day and whenever you tap it. Captions are added when you look at a photo in a hall.</string>
+    <string name="frame_exhibits">Every exhibit</string>
+    <string name="frame_kept">Everything kept</string>
+    <string name="frame_this_day">This day in other years</string>
+    <string name="frame_hall">The “%1$s” hall</string>
+    <string name="caption_t">Caption</string>
+    <string name="caption_add">Add a caption</string>
+    <string name="caption_edit">Edit the caption</string>
+    <string name="guestbook">Guest book</string>
+    <string name="guestbook_sub">what the visitors write</string>
+    <string name="guestbook_empty">Nobody has written anything yet. Hang something in the halls and visitors will come.</string>
+    <plurals name="visitors_today">
+        <item quantity="one">%d visitor today</item>
+        <item quantity="other">%d visitors today</item>
+    </plurals>
     <string name="chronicle">Chronicle</string>
     <string name="chronicle_sub">everything the museum has lived through</string>
     <string name="in_fonds">kept</string>

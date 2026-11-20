@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The frame on the home screen (#4): a photo from the museum on a mount, its caption below. Tap the photo for another. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_mount"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/photo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#22000000"
+        android:contentDescription="@string/frame_photo"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/caption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="6dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/cormorant_italic"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textColor="#3A3128"
+        android:textSize="15sp" />
+</LinearLayout>

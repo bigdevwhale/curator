@@ -1,5 +1,6 @@
 package app.curator.data
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -40,6 +41,8 @@ data class Item(
     val hash: Long = 0,
     val seed: Int = 0,
     val art: String = "",
+    /** The curator's own words under it: «New Year 2019. Mum and me» (#4). */
+    @ColumnInfo(defaultValue = "") val caption: String = "",
 ) {
     val fake get() = seed != 0
     val pending get() = verdict == Verdict.NONE || verdict == Verdict.LATER
@@ -60,6 +63,15 @@ data class Hall(
 data class Show(
     @PrimaryKey val week: Long,
     val title: String,
+)
+
+/** A line a visitor left in the guest book (#6): who they were and what they wrote, in the language of that day. */
+@Entity(tableName = "guestbook")
+data class Note(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    val at: Long,
+    val who: String,
+    val text: String,
 )
 
 enum class EventKind { FOUNDED, CRATE, ACT, WING, HALL, RANK }

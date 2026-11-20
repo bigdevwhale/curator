@@ -116,6 +116,22 @@ interface ItemDao {
     @Query("UPDATE items SET verdict = :v, hall = :hall, decided = :at WHERE id = :id")
     suspend fun decide(id: Long, v: Verdict, hall: Long?, at: Long)
 
+    @Query("UPDATE items SET caption = :caption WHERE id = :id")
+    suspend fun caption(id: Long, caption: String)
+
+    /** A thing for the frame on the home screen (#4): [kind] 0 every exhibit, 1 everything kept, 2 one hall, 3 this day in other years. */
+    @Query("""SELECT * FROM items WHERE id != :not AND (
+        (:kind = 0 AND verdict = 'EXHIBIT') OR (:kind = 1 AND verdict IN ('KEEP','EXHIBIT')) OR
+        (:kind = 2 AND hall = :hall AND verdict IN ('KEEP','EXHIBIT')) OR (:kind = 3 AND md = :md AND verdict IN ('KEEP','EXHIBIT'))
+        ) ORDER BY RANDOM() LIMIT 1""")
+    suspend fun framed(kind: Int, hall: Long, md: Int, not: Long): Item?
+
+    @Query("SELECT COUNT(*) FROM items WHERE verdict IN ('KEEP','EXHIBIT')")
+    suspend fun keptCount(): Int
+
+    @Query("SELECT COUNT(*) FROM items WHERE verdict = 'EXHIBIT'")
+    suspend fun exhibitCount(): Int
+
     @Query("UPDATE items SET analyzed = 1, sharp = :sharp, bright = :bright, hash = :hash WHERE id = :id")
     suspend fun analyzed(id: Long, sharp: Float, bright: Float, hash: Long)
 
@@ -162,9 +178,22 @@ interface MuseumDao {
 
     @Insert
     suspend fun log(e: Event)
+
+    @Query("SELECT * FROM guestbook ORDER BY at DESC, id DESC")
+    fun notes(): Flow<List<Note>>
+
+    @Query("SELECT COUNT(*) FROM guestbook WHERE at >= :since")
+    suspend fun notesSince(since: Long): Int
+
+    @Query("SELECT text FROM guestbook ORDER BY at DESC LIMIT :n")
+    suspend fun lastNotes(n: Int): List<String>
+
+    @Insert
+    suspend fun addNote(n: Note)
 }
 
-@Database(entities = [Item::class, Hall::class, Show::class, Event::class], version = 1, exportSchema = true)
+@Database(entities = [Item::class, Hall::class, Show::class, Event::class, Note::class], version = 2, exportSchema = true,
+    autoMigrations = [androidx.room.AutoMigration(from = 1, to = 2)])
 abstract class MuseumDb : RoomDatabase() {
     abstract fun items(): ItemDao
     abstract fun museum(): MuseumDao

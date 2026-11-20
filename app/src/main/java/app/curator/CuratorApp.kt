@@ -13,16 +13,19 @@ import app.curator.data.Hall
 import app.curator.data.Item
 import app.curator.data.Media
 import app.curator.data.MuseumDb
+import app.curator.data.Note
 import app.curator.data.SettingsStore
 import app.curator.data.Show
 import app.curator.data.Source
 import app.curator.data.Verdict
 import app.curator.domain.Dates
 import app.curator.domain.Expert
+import app.curator.domain.Guests
 import app.curator.domain.Ranks
 import app.curator.domain.Rules
 import app.curator.domain.Titles
 import app.curator.domain.Wings
+import app.curator.work.Frame
 import app.curator.work.Reminder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -73,6 +76,8 @@ class AppContainer(context: Context) {
     suspend fun sync() {
         // A signature the screen could not finish (the app was rebuilt or closed behind the dialog) is counted now.
         settleSigning()
+        // the day's first visitor signs the guest book (#6)
+        runCatching { visit() }
         if (demo) return
         val a = Media.access(app)
         access.value = a
@@ -173,10 +178,33 @@ class AppContainer(context: Context) {
     /** Puts a thing back as it was before the last decision. */
     suspend fun restore(x: Item) = items.decide(x.id, x.verdict, x.hall, x.decided)
 
-    suspend fun closeCrate(no: Int, n: Int, label: String) {
+    suspend fun closeCrate(no: Int, n: Int, label: String, month: Int? = null) {
         museum.log(Event(at = System.currentTimeMillis(), kind = EventKind.CRATE, n = n, text = label))
         settings.update { if (it.crateNo == no) it.copy(crateNo = no + 1) else it }
         checkRank()
+        // a crate gone through brings visitors, and one of them writes about it (#6)
+        val ru = app.ru
+        visit(month?.let { Dates.monthName(it, if (ru) Locale.forLanguageTag("ru") else Locale.ENGLISH).let { s -> if (ru) s.replaceFirstChar { c -> c.lowercase() } else s } }, force = n > 0)
+    }
+
+    private val visitLock = Mutex()
+
+    /**
+     * A visitor writes in the guest book (#6): once a day anyway, and after a crate ([force]) up to three times a day.
+     * [month] is the month just gone through, for the line to be about it.
+     */
+    suspend fun visit(month: String? = null, force: Boolean = false) = visitLock.withLock {
+        val now = System.currentTimeMillis()
+        val dayStart = java.time.LocalDate.now().atStartOfDay(Dates.zone()).toInstant().toEpochMilli()
+        val todays = museum.notesSince(dayStart)
+        if (todays >= 3 || (!force && todays > 0)) return@withLock
+        val halls = museum.hallList()
+        val counts = halls.associate { it.id to items.hallItems(it.id).size }
+        val exhibits = items.exhibitCount()
+        val show = museum.show(Dates.week(now))?.title
+        val v = Guests.View(app.ru, halls.map { it.name to (counts[it.id] ?: 0) }, exhibits, items.keptCount(), show, Wings.open(settings.now().freed), month)
+        val line = Guests.write(v, kotlin.random.Random(now), museum.lastNotes(12)) ?: return@withLock
+        museum.addNote(Note(at = now, who = line.first, text = line.second))
     }
 
     private suspend fun described(): Int {
@@ -225,6 +253,7 @@ class AppContainer(context: Context) {
     suspend fun signed(ids: List<Long>, bytes: Long) {
         if (ids.isEmpty()) return
         items.delete(ids)
+        Frame.refresh(app)
         settings.update { it.copy(freed = it.freed + bytes, writtenOff = it.writtenOff + ids.size) }
         val now = System.currentTimeMillis()
         museum.log(Event(at = now, kind = EventKind.ACT, n = ids.size, bytes = bytes))

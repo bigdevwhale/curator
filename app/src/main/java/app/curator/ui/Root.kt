@@ -47,6 +47,7 @@ import app.curator.data.Fund
 import app.curator.data.Hall
 import app.curator.data.Item
 import app.curator.data.MonthRow
+import app.curator.data.Note
 import app.curator.data.Settings
 import app.curator.data.Show
 import app.curator.data.Source
@@ -57,6 +58,7 @@ import app.curator.ui.crate.CrateScreen
 import app.curator.ui.halls.HallScreen
 import app.curator.ui.halls.HallsScreen
 import app.curator.ui.museum.ChronicleScreen
+import app.curator.ui.museum.GuestbookScreen
 import app.curator.ui.museum.CeremonyView
 import app.curator.ui.museum.MuseumScreen
 import app.curator.ui.onboarding.AccessScreen
@@ -73,6 +75,7 @@ sealed interface Overlay {
     data class Hall(val id: Long) : Overlay
     data object Settings : Overlay
     data object Chronicle : Overlay
+    data object Guestbook : Overlay
 
     companion object { const val EXHIBITS = -1L }
 }
@@ -90,6 +93,7 @@ class Home(
     val exhibits: List<Item>,
     val shows: List<Show>,
     val chronicle: List<Event>,
+    val notes: List<Note>,
     val access: Access,
     val syncing: Boolean,
     val now: Long,
@@ -125,6 +129,7 @@ fun CuratorRoot(s: Settings, now: Long = System.currentTimeMillis(), tab: Tab = 
     val exhibits by remember { c.items.exhibits() }.collectAsState(emptyList())
     val shows by remember { c.museum.shows() }.collectAsState(emptyList())
     val chronicle by remember { c.museum.chronicle() }.collectAsState(emptyList())
+    val notes by remember { c.museum.notes() }.collectAsState(emptyList())
     val syncing by c.syncing.collectAsState()
     val ceremony by c.ceremony.collectAsState()
     val nav = remember { Nav(tab, overlay) }
@@ -132,7 +137,7 @@ fun CuratorRoot(s: Settings, now: Long = System.currentTimeMillis(), tab: Tab = 
     val m = months ?: return
     val st = stats ?: Stats(0, 0, 0, 0, 0, 0)
     val h = Home(s, m, st, mapOf(Fund.SHOTS to shots, Fund.VIDEO to videos, Fund.CHATS to chats, Fund.HEAVY to heavy), act, halls,
-        counts.associate { it.hall to it.n }, hung, exhibits, shows, chronicle, access, syncing, now)
+        counts.associate { it.hall to it.n }, hung, exhibits, shows, chronicle, notes, access, syncing, now)
 
     Box(Modifier.fillMaxSize().room()) {
         Column(Modifier.fillMaxSize()) {
@@ -152,6 +157,7 @@ fun CuratorRoot(s: Settings, now: Long = System.currentTimeMillis(), tab: Tab = 
                 is Overlay.Hall -> HallScreen(o.id, h, nav)
                 Overlay.Settings -> SettingsPage(h, nav)
                 Overlay.Chronicle -> ChronicleScreen(h, nav)
+                Overlay.Guestbook -> GuestbookScreen(h, nav)
             }
         }
         ceremony?.let { cer -> CeremonyView(cer, h) { c.ceremony.value = null } }

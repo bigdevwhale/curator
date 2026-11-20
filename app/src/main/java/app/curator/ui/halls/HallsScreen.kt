@@ -38,6 +38,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -185,17 +186,20 @@ private fun Room(name: String, sub: String, xs: List<Item>, modifier: Modifier, 
 }
 
 @Composable
-fun NameDialog(title: String, initial: String, onDismiss: () -> Unit, onDone: (String) -> Unit) {
-    var name by remember { mutableStateOf(initial) }
+fun NameDialog(title: String, initial: String, onDismiss: () -> Unit, max: Int = 48, empty: Boolean = false, onDone: (String) -> Unit) {
+    var name by remember { mutableStateOf(androidx.compose.ui.text.input.TextFieldValue(initial, androidx.compose.ui.text.TextRange(initial.length))) }
+    // the keyboard comes up at once, with the cursor after what is already written
+    val focus = remember { androidx.compose.ui.focus.FocusRequester() }
+    androidx.compose.runtime.LaunchedEffect(Unit) { runCatching { focus.requestFocus() } }
     Scrim(onDismiss) {
         Card(Modifier.fillMaxWidth()) {
             Text(title, style = T.Title)
-            BasicTextField(name, { name = it.take(48) }, singleLine = true, textStyle = T.Heading, cursorBrush = SolidColor(C.ink),
+            BasicTextField(name, { name = if (it.text.length <= max) it else it.copy(text = it.text.take(max)) }, singleLine = !empty, textStyle = T.Heading, cursorBrush = SolidColor(C.ink),
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-                modifier = Modifier.fillMaxWidth().padding(top = 12.dp).border(1.dp, C.line, RoundedCornerShape(3.dp)).padding(10.dp))
+                modifier = Modifier.fillMaxWidth().padding(top = 12.dp).focusRequester(focus).border(1.dp, C.line, RoundedCornerShape(3.dp)).padding(10.dp))
             Row(Modifier.fillMaxWidth().padding(top = 14.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Btn(stringResource(R.string.cancel), onDismiss, Modifier.weight(1f), Kind.GHOST)
-                Btn(stringResource(R.string.save), { if (name.isNotBlank()) onDone(name.trim()) }, Modifier.weight(1f), Kind.GREEN, enabled = name.isNotBlank())
+                Btn(stringResource(R.string.save), { if (empty || name.text.isNotBlank()) onDone(name.text.trim()) }, Modifier.weight(1f), Kind.GREEN, enabled = empty || name.text.isNotBlank())
             }
         }
     }

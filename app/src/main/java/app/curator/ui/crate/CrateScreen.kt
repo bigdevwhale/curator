@@ -337,7 +337,7 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
     if (picking) HallPicker(h.halls, h.hallCounts, onDismiss = { picking = false }) { hall -> picking = false; fly(Dir.HALL, hall) }
 
     if (done && !empty) {
-        LaunchedEffect(Unit) { c.closeCrate(cr.no, tally.described, label) }
+        LaunchedEffect(Unit) { c.closeCrate(cr.no, tally.described, label, (cr.source as? Source.Month)?.month) }
         val reviewLeft by produceState(0, cr) { (cr.source as? Source.Review)?.let { value = c.items.keptMonthCount(it.month, it.since) } }
         val more = when (val s = cr.source) {
             is Source.Month -> (h.months.firstOrNull { it.month == s.month }?.pending ?: 0) > 0

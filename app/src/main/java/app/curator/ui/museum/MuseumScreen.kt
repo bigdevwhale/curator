@@ -123,6 +123,7 @@ fun MuseumScreen(h: Home, nav: Nav) {
             if (h.act.isNotEmpty()) Banner(Icons.Outlined.Description, stringResource(R.string.act_waits),
                 pluralStringResource(R.plurals.things, h.act.size, Fmt.n(h.act.size)) + " · " + Fmt.bytes(h.act.sumOf { it.size }, ru), C.redSoft, C.red) { nav.tab = Tab.ACT }
             OnThisDay(h)
+            GuestbookCard(h, nav)
 
             Caps(stringResource(R.string.funds))
             LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {

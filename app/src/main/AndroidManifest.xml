@@ -30,6 +30,28 @@
             </intent-filter>
         </activity>
 
+        <!-- The frame on the home screen: a photo from the museum with its caption (#4). -->
+        <receiver
+            android:name=".work.FrameWidget"
+            android:exported="true"
+            android:label="@string/frame_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_frame" />
+        </receiver>
+
+        <activity
+            android:name=".work.FrameSetup"
+            android:exported="true"
+            android:theme="@style/Theme.Curator">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
         <!-- The exhibition poster is shared from here. -->
         <provider
             android:name="androidx.core.content.FileProvider"

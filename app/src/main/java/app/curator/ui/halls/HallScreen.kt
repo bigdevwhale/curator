@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.curator.R
+import app.curator.work.Frame
 import app.curator.container
 import app.curator.data.Item
 import app.curator.data.Media
@@ -70,6 +71,7 @@ fun HallScreen(id: Long, h: Home, nav: Nav) {
     var look by remember { mutableStateOf<Item?>(null) }
     var menu by remember { mutableStateOf(false) }
     var renaming by remember { mutableStateOf(false) }
+    var captioning by remember { mutableStateOf<Item?>(null) }
     var note by remember { mutableStateOf<String?>(null) }
     if (!main && hall == null) { androidx.compose.runtime.LaunchedEffect(Unit) { nav.close() }; return }
 
@@ -136,7 +138,13 @@ fun HallScreen(id: Long, h: Home, nav: Nav) {
         Scrim({ look = null }) {
             Card(Modifier.fillMaxWidth(), pad = 12.dp) {
                 Thumb(x, Modifier.fillMaxWidth().aspectRatio(.8f), px = 1080, fit = true)
-                Text(Fmt.bytes(x.size, ru) + (if (x.bucket.isNotBlank()) " · " + x.bucket else ""), style = T.Label, modifier = Modifier.padding(top = 8.dp))
+                // the curator's own words under the photo, shown in the frame on the home screen too (#4)
+                if (x.caption.isNotBlank()) Text(x.caption, style = T.Italic, modifier = Modifier.padding(top = 8.dp))
+                Row(Modifier.fillMaxWidth().padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Text(Fmt.bytes(x.size, ru) + (if (x.bucket.isNotBlank()) " · " + x.bucket else ""), style = T.Label, modifier = Modifier.weight(1f))
+                    Text(stringResource(if (x.caption.isBlank()) R.string.caption_add else R.string.caption_edit), style = T.Label.copy(color = C.accent),
+                        modifier = Modifier.clickable { captioning = x }.padding(start = 8.dp))
+                }
                 Row(Modifier.fillMaxWidth().padding(top = 10.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     if (x.verdict == Verdict.EXHIBIT) Btn(stringResource(R.string.unexhibit), { c.write { decide(x, Verdict.KEEP) }; look = null }, Modifier.weight(1f), Kind.GHOST)
                     else Btn(stringResource(R.string.a_ex), { c.write { decide(x, Verdict.EXHIBIT) }; look = null }, Modifier.weight(1f), Kind.ACCENT)
@@ -146,6 +154,15 @@ fun HallScreen(id: Long, h: Home, nav: Nav) {
                 if (!x.fake) Text(stringResource(R.string.open_gallery), style = T.Label.copy(color = C.accent), textAlign = TextAlign.Center,
                     modifier = Modifier.fillMaxWidth().clickable { openInGallery(ctx, x) }.padding(top = 10.dp))
             }
+        }
+    }
+
+    // above the photo it captions
+    captioning?.let { x ->
+        NameDialog(stringResource(R.string.caption_t), x.caption, { captioning = null }, max = 100, empty = true) { t ->
+            captioning = null
+            look = x.copy(caption = t)
+            c.write { items.caption(x.id, t); Frame.refresh(app) }
         }
     }
 }

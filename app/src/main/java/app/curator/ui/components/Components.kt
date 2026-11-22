@@ -233,11 +233,11 @@ fun Scrim(onDismiss: (() -> Unit)?, bottom: Boolean = false, content: @Composabl
 
 /** Big numbers in a row, divided by hairlines. */
 @Composable
-fun Stats(cells: List<Pair<String, String>>, modifier: Modifier = Modifier) {
+fun Stats(cells: List<Pair<String, String>>, modifier: Modifier = Modifier, clicks: Map<Int, () -> Unit> = emptyMap()) {
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         cells.forEachIndexed { i, (big, small) ->
             if (i > 0) Box(Modifier.width(1.dp).height(36.dp).background(C.line))
-            Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(Modifier.weight(1f).then(clicks[i]?.let { Modifier.clickable(onClick = it) } ?: Modifier), horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(big, style = T.Number, maxLines = 1)
                 Text(small, style = T.Label, textAlign = TextAlign.Center, maxLines = 1)
             }

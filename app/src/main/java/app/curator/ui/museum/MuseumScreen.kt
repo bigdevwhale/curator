@@ -112,7 +112,9 @@ fun MuseumScreen(h: Home, nav: Nav) {
                     Fmt.n(h.stats.fonds) to stringResource(R.string.in_fonds),
                     Fmt.n(h.stats.exhibits) to stringResource(R.string.exhibits),
                     Fmt.bytes(s.freed, ru) to stringResource(R.string.freed),
-                ), Modifier.fillMaxWidth().padding(vertical = 16.dp))
+                ), Modifier.fillMaxWidth().padding(vertical = 16.dp),
+                    // what was kept can be looked at (#5)
+                    clicks = mapOf(0 to { nav.open(Overlay.Kept(0)) }, 1 to { nav.open(Overlay.Hall(Overlay.EXHIBITS)) }))
             }
             Ranks.next(described)?.let { n ->
                 Text(stringResource(R.string.rank_next, ranks[rank + 1], Fmt.n(n - described)), style = T.Small, textAlign = TextAlign.Center,
@@ -145,7 +147,8 @@ fun MuseumScreen(h: Home, nav: Nav) {
                 textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(24.dp))
         }
         items(h.months, key = { it.month }) { m ->
-            CrateRow(m, ctx.locale, ru, onReview = { nav.open(Overlay.Crate(Source.Review(m.month, System.currentTimeMillis()))) }) { nav.open(Overlay.Crate(Source.Month(m.month))) }
+            // a crate gone through shows what was kept in it; the second look is a button there, not a tap on the row (#5)
+            CrateRow(m, ctx.locale, ru, onReview = { nav.open(Overlay.Kept(m.month)) }) { nav.open(Overlay.Crate(Source.Month(m.month))) }
         }
     }
 }
@@ -189,7 +192,7 @@ private fun CrateRow(m: MonthRow, locale: java.util.Locale, ru: Boolean, onRevie
                     style = T.Label.copy(color = if (done) C.green else C.muted), modifier = Modifier.padding(top = 4.dp))
             }
             // A crate gone through can be opened again to look at what was kept (#1).
-            if (done) Text(stringResource(R.string.review), style = T.Label.copy(color = C.ink), modifier = Modifier.clip(RoundedCornerShape(50)).border(1.dp, C.line, RoundedCornerShape(50)).padding(horizontal = 12.dp, vertical = 7.dp))
+            if (done) Text(stringResource(R.string.kept_look), style = T.Label.copy(color = C.ink), modifier = Modifier.clip(RoundedCornerShape(50)).border(1.dp, C.line, RoundedCornerShape(50)).padding(horizontal = 12.dp, vertical = 7.dp))
             else Text(stringResource(R.string.crate_open), style = T.Label.copy(color = C.bg), modifier = Modifier.clip(RoundedCornerShape(50)).background(C.ink).padding(horizontal = 12.dp, vertical = 7.dp))
         }
     }

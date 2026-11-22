@@ -330,4 +330,11 @@
         <item>Документы</item>
         <item>Рецепты</item>
     </string-array>
+    <string name="kept_look">смотреть</string>
+    <string name="kept_t">Оставленное</string>
+    <string name="kept_b">Всё, что вы оставили. Фото лежат в галерее на своих местах – это не копии.</string>
+    <string name="kept_month_b">Всё, что вы оставили в этом месяце. Фото лежат в галерее на своих местах – это не копии.</string>
+    <string name="review_go">Второй обход</string>
+    <string name="review_b">Пройти по оставленному ещё раз и убрать лишнее.</string>
+    <string name="kept_empty">Здесь пока ничего не оставлено.</string>
 </resources>

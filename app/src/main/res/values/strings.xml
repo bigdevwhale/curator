@@ -310,4 +310,11 @@
         <item>Documents</item>
         <item>Recipes</item>
     </string-array>
+    <string name="kept_look">view</string>
+    <string name="kept_t">Kept</string>
+    <string name="kept_b">Everything you let stay. The photos are in the gallery in their places – these are not copies.</string>
+    <string name="kept_month_b">Everything you let stay this month. The photos are in the gallery in their places – these are not copies.</string>
+    <string name="review_go">Second look</string>
+    <string name="review_b">Go through what was kept once more and weed out the extra.</string>
+    <string name="kept_empty">Nothing kept here yet.</string>
 </resources>

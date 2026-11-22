@@ -73,6 +73,8 @@ sealed interface Overlay {
     data class Crate(val source: Source) : Overlay
     /** A hall's things; [EXHIBITS] is the main hall with every exhibit. */
     data class Hall(val id: Long) : Overlay
+    /** What was kept, of one month or ([month] 0) of all (#5). */
+    data class Kept(val month: Int) : Overlay
     data object Settings : Overlay
     data object Chronicle : Overlay
     data object Guestbook : Overlay
@@ -155,6 +157,7 @@ fun CuratorRoot(s: Settings, now: Long = System.currentTimeMillis(), tab: Tab = 
             when (o) {
                 is Overlay.Crate -> CrateScreen(o.source, h, nav)
                 is Overlay.Hall -> HallScreen(o.id, h, nav)
+                is Overlay.Kept -> app.curator.ui.halls.KeptScreen(o.month, nav)
                 Overlay.Settings -> SettingsPage(h, nav)
                 Overlay.Chronicle -> ChronicleScreen(h, nav)
                 Overlay.Guestbook -> GuestbookScreen(h, nav)

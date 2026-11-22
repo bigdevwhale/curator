@@ -76,6 +76,10 @@ interface ItemDao {
     @Query("SELECT * FROM items WHERE verdict = 'EXHIBIT' ORDER BY decided DESC")
     fun exhibits(): Flow<List<Item>>
 
+    /** Everything kept, of one month or ([month] 0) of all (#5): what was let stay, to be seen somewhere. */
+    @Query("SELECT * FROM items WHERE (:month = 0 OR month = :month) AND verdict IN ('KEEP','EXHIBIT') ORDER BY taken DESC")
+    fun kept(month: Int): Flow<List<Item>>
+
     @Query("SELECT * FROM items WHERE hall = :hall AND verdict IN ('KEEP','EXHIBIT') ORDER BY taken DESC")
     fun inHall(hall: Long): Flow<List<Item>>
 

@@ -6,6 +6,17 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
+## [1.2.1] - 2026-11-22
+
+### Fixed
+- **What was kept can be seen, and doesn't come round again (#5).** A month gone through opened straight into a second look, so the same photos showed up once more and seemed doubled. Now it opens what was kept that month – the photos are in the gallery in their places, not copies – and the second look is a button there. «Kept» on the front page opens everything kept, «best» the main hall.
+
+<!-- tg
+Разобранный месяц теперь показывает всё, что вы в нём оставили, – фото лежат в галерее на своих местах, это не копии
+Второй обход по оставленному запускается отдельной кнопкой, а не нажатием на месяц, поэтому одни и те же фото больше не попадаются снова
+Счётчик «оставлено» на главном экране открывает всё оставленное
+-->
+
 ## [1.2.0] - 2026-11-20
 
 ### Added

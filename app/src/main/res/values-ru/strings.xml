@@ -96,7 +96,11 @@
     <string name="nothing_to_undo">Возвращать нечего</string>
     <string name="series_first">Сначала выберите подлинник</string>
     <string name="series_t">Похожие кадры: %1$d</string>
-    <string name="series_b">Выберите подлинник — копии уйдут в акт.</string>
+    <string name="series_b">Выберите подлинник — копии уйдут в акт. Чтобы рассмотреть кадр, нажмите на лупу или подержите палец.</string>
+    <string name="lens_open">Рассмотреть</string>
+    <string name="lens_pick">Сделать подлинником</string>
+    <string name="lens_picked">Это подлинник</string>
+    <string name="lens_hint">Разведите пальцы или нажмите дважды, чтобы приблизить</string>
     <string name="original">подлинник</string>
     <string name="keep_all">Оставить все</string>
     <string name="keep_original">Оставить подлинник</string>

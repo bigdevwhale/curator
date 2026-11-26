@@ -104,20 +104,23 @@ private suspend fun loadPicture(ctx: android.content.Context, item: Item, w: Int
 /** Loads a picture for a [w]×[h] box into the cache ahead of time, so a [Thumb] of it shows at once. */
 suspend fun preloadPicture(ctx: android.content.Context, item: Item, w: Int, h: Int) { loadPicture(ctx, item, w, h, false) }
 
-/** A photo from the gallery (or the demo), loaded off the main thread at the size its slot has on screen, and cached. */
+/**
+ * A photo from the gallery (or the demo), loaded off the main thread at the size its slot has on screen, and cached.
+ * [scale] asks for that many times more pixels, for a picture that is zoomed into; [back] shows around a fitted one.
+ */
 @Composable
-fun Thumb(item: Item, modifier: Modifier = Modifier, px: Int = 256, fit: Boolean = false, badge: Boolean = true, shape: Shape? = null) {
+fun Thumb(item: Item, modifier: Modifier = Modifier, px: Int = 256, fit: Boolean = false, badge: Boolean = true, shape: Shape? = null, scale: Float = 1f, back: Color = C.photoBg) {
     BoxWithConstraints(modifier) {
         // As many pixels as the slot really has (in steps of 64, so loads stay few); [px] where a side is unbounded.
-        val step = { n: Int -> ((n + 63) / 64) * 64 }
+        val step = { n: Int -> ((n * scale).toInt() + 63) / 64 * 64 }
         val w = if (constraints.hasBoundedWidth) step(constraints.maxWidth) else px
         val h = if (constraints.hasBoundedHeight) step(constraints.maxHeight) else px
-        Picture(item, Modifier.fillMaxSize(), w.coerceAtLeast(64), h.coerceAtLeast(64), fit, badge, shape)
+        Picture(item, Modifier.fillMaxSize(), w.coerceAtLeast(64), h.coerceAtLeast(64), fit, badge, shape, back)
     }
 }
 
 @Composable
-private fun Picture(item: Item, modifier: Modifier, w: Int, h: Int, fit: Boolean, badge: Boolean, shape: Shape?) {
+private fun Picture(item: Item, modifier: Modifier, w: Int, h: Int, fit: Boolean, badge: Boolean, shape: Shape?, back: Color) {
     val ctx = LocalContext.current
     // Keyed state: when the slot shows another thing (the next card), not even one frame of the old picture.
     val state = remember(item.id) { mutableStateOf(Pictures.cache.get(item.id)?.asImageBitmap()) }
@@ -126,7 +129,7 @@ private fun Picture(item: Item, modifier: Modifier, w: Int, h: Int, fit: Boolean
         if (now == null || !Media.covers(now.width, now.height, w, h, fit)) loadPicture(ctx, item, w, h, fit)?.let { state.value = it.asImageBitmap() }
     }
     val bmp = state.value
-    Box(modifier.then(if (shape != null) Modifier.clip(shape) else Modifier).background(C.photoBg)) {
+    Box(modifier.then(if (shape != null) Modifier.clip(shape) else Modifier).background(back)) {
         bmp?.let { Image(it, null, Modifier.fillMaxSize(), contentScale = if (fit) ContentScale.Fit else ContentScale.Crop) }
         if (badge && item.video) Text("▶ " + Fmt.duration(item.duration), style = T.Label.copy(color = Color.White, fontSize = 11.sp),
             modifier = Modifier.align(Alignment.BottomStart).padding(6.dp).background(Color(0x99000000), RoundedCornerShape(6.dp)).padding(horizontal = 6.dp, vertical = 1.dp))

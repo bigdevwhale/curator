@@ -94,7 +94,11 @@
     <string name="nothing_to_undo">Nothing to undo</string>
     <string name="series_first">Choose the original first</string>
     <string name="series_t">One thing, %1$d versions</string>
-    <string name="series_b">Choose the original: the copies go into the act.</string>
+    <string name="series_b">Choose the original: the copies go into the act. Tap the lens or hold a shot to look closer.</string>
+    <string name="lens_open">Look closer</string>
+    <string name="lens_pick">Make this the original</string>
+    <string name="lens_picked">This is the original</string>
+    <string name="lens_hint">Pinch or double-tap to zoom</string>
     <string name="original">original</string>
     <string name="keep_all">Keep all</string>
     <string name="keep_original">Keep the original</string>

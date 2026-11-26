@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.drag
@@ -34,6 +35,7 @@ import androidx.compose.material.icons.outlined.Collections
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Star
+import androidx.compose.material.icons.rounded.ZoomIn
 import androidx.compose.material3.Icon
 import androidx.compose.ui.unit.sp
 import app.curator.ui.components.IconBtn
@@ -240,6 +242,11 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
         c.write { for (x in card) decide(x, if (x in off) Verdict.ACT else Verdict.KEEP) }
     }
 
+    // The original chosen in the series on top, and the shot of it looked at closely (#7); both belong to that one card.
+    val topId = deck.firstOrNull()?.first()?.id
+    var pick by remember(topId) { mutableStateOf<Item?>(null) }
+    var lens by remember(topId) { mutableStateOf<Int?>(null) }
+
     // The card after next gets its picture now, so it never shows up empty under the top one.
     val ahead = deck.getOrNull(2)?.first()
     LaunchedEffect(ahead?.id) { if (ahead != null && deck.getOrNull(2)?.size == 1) ctx.resources.displayMetrics.let { m -> preloadPicture(ctx, ahead, m.widthPixels, m.heightPixels * 2 / 3) } }
@@ -254,7 +261,7 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
         Box(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)) {
             if (empty) Text(stringResource(R.string.crate_empty), style = T.Italic.copy(color = C.muted), textAlign = TextAlign.Center, modifier = Modifier.align(Alignment.Center))
             deck.getOrNull(1)?.let { under ->
-                Box(Modifier.fillMaxSize().graphicsLayer { scaleX = .95f; scaleY = .95f; translationY = 14.dp.toPx(); alpha = .8f * lift.value }) { CardFace(under, cr, ru, null, false, false) {} }
+                Box(Modifier.fillMaxSize().graphicsLayer { scaleX = .95f; scaleY = .95f; translationY = 14.dp.toPx(); alpha = .8f * lift.value }) { CardFace(under, cr, ru, null, false, false, null) {} }
             }
             deck.firstOrNull()?.let { top ->
                 val key = top.first().id
@@ -304,7 +311,8 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
                             }
                         })
                 ) {
-                    CardFace(top, cr, ru, dir?.let { it to strength }, fit, exStamp, onAll = { series(top, null, all = true) }) { keep -> series(top, keep) }
+                    CardFace(top, cr, ru, dir?.let { it to strength }, fit, exStamp, pick, onPick = { pick = it }, onLens = { lens = it },
+                        onAll = { series(top, null, all = true) }) { keep -> series(top, keep) }
                 }
             }
         }
@@ -324,6 +332,10 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
         Box(Modifier.fillMaxSize().padding(bottom = 130.dp), contentAlignment = Alignment.BottomCenter) {
             Text(n, style = T.Label.copy(color = C.bg), modifier = Modifier.clip(RoundedCornerShape(50)).background(C.ink).padding(horizontal = 16.dp, vertical = 10.dp))
         }
+    }
+
+    lens?.let { i ->
+        deck.firstOrNull()?.takeIf { it.size > 1 }?.let { card -> Lens(card, i, pick, onPick = { pick = it }) { lens = null } }
     }
 
     if (expert) ExpertSheet(cr, total) { saved ->
@@ -362,7 +374,10 @@ private val TIME = DateTimeFormatter.ofPattern("HH:mm")
 
 /** One card on the table: a thing on its inventory card, or a series to choose the original from. */
 @Composable
-private fun CardFace(card: List<Item>, cr: Crate, ru: Boolean, stamp: Pair<Dir, Float>?, fit: Boolean, ex: Boolean, onAll: () -> Unit = {}, onSeries: (Item?) -> Unit) {
+private fun CardFace(
+    card: List<Item>, cr: Crate, ru: Boolean, stamp: Pair<Dir, Float>?, fit: Boolean, ex: Boolean, pick: Item?,
+    onPick: (Item) -> Unit = {}, onLens: (Int) -> Unit = {}, onAll: () -> Unit = {}, onSeries: (Item?) -> Unit,
+) {
     val ctx = LocalContext.current
     val x = card.first()
     Column(
@@ -371,18 +386,22 @@ private fun CardFace(card: List<Item>, cr: Crate, ru: Boolean, stamp: Pair<Dir, 
             .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 14.dp)
     ) {
         if (card.size > 1) {
-            var pick by remember(x.id) { mutableStateOf<Item?>(null) }
             Text(stringResource(R.string.series_t, card.size), style = T.Heading, modifier = Modifier.padding(start = 6.dp, top = 6.dp))
             Text(stringResource(R.string.series_b), style = T.Small, modifier = Modifier.padding(start = 6.dp, bottom = 10.dp))
             LazyVerticalGrid(GridCells.Fixed(if (card.size <= 4) 2 else 3), Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                itemsIndexed(card, key = { _, it -> it.id }) { _, it ->
+                itemsIndexed(card, key = { _, it -> it.id }) { i, it ->
                     val on = pick?.id == it.id
-                    Box(Modifier.aspectRatio(.8f).clip(RoundedCornerShape(12.dp)).clickable { pick = it }.then(if (on) Modifier.border(3.dp, C.accent, RoundedCornerShape(12.dp)) else Modifier)
+                    // A tap names the original; a long press, or the lens, shows the shot over the whole screen.
+                    Box(Modifier.aspectRatio(.8f).clip(RoundedCornerShape(12.dp)).combinedClickable(onLongClick = { onLens(i) }) { onPick(it) }.then(if (on) Modifier.border(3.dp, C.accent, RoundedCornerShape(12.dp)) else Modifier)
                         .alpha(if (pick != null && !on) .45f else 1f)) {
                         Thumb(it, Modifier.fillMaxSize(), px = 360, shape = RoundedCornerShape(12.dp))
                         if (on) Text(stringResource(R.string.original).uppercase(), style = T.Caps.copy(color = C.onAccent, letterSpacing = T.Caps.letterSpacing * .4f),
                             modifier = Modifier.align(Alignment.BottomStart).padding(4.dp).background(C.accent).padding(horizontal = 5.dp))
+                        Box(Modifier.align(Alignment.TopEnd).padding(4.dp).size(32.dp).clip(CircleShape).background(Color(0x73000000)).clickable { onLens(i) },
+                            contentAlignment = Alignment.Center) {
+                            Icon(Icons.Rounded.ZoomIn, stringResource(R.string.lens_open), tint = Color.White, modifier = Modifier.size(20.dp))
+                        }
                     }
                 }
             }

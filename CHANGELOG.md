@@ -6,6 +6,16 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
+## [1.3.0] - 2026-11-26
+
+### Added
+- **A closer look at similar shots (#7).** In a series of near-identical frames, the lens on a shot (or a long press) opens it over the whole screen: swipe between the frames, pinch or double-tap to zoom in, and make the one you like the original from there. Each frame shows its time to the second and its size, so the shots of one burst can be told apart.
+
+<!-- tg
+Похожие кадры теперь можно рассмотреть: нажмите на лупу на миниатюре или подержите палец
+Кадры листаются на весь экран, приближаются двумя пальцами или двойным нажатием, а подлинник выбирается прямо оттуда
+-->
+
 ## [1.2.1] - 2026-11-22
 
 ### Fixed

@@ -69,10 +69,10 @@ private val SECONDS = DateTimeFormatter.ofPattern("HH:mm:ss")
 
 /**
  * The shots of a series one by one, over the whole screen, to tell near-identical frames apart (#7):
- * swipe between them, pinch or double-tap to look closer, and name the original from here.
+ * swipe between them, pinch or double-tap to look closer, and mark the ones to keep from here (#8).
  */
 @Composable
-fun Lens(card: List<Item>, start: Int, pick: Item?, onPick: (Item) -> Unit, onClose: () -> Unit) {
+fun Lens(card: List<Item>, start: Int, picks: Set<Long>, onPick: (Item) -> Unit, onClose: () -> Unit) {
     BackHandler(onBack = onClose)
     val ru = LocalContext.current.ru
     val pager = rememberPagerState(start.coerceIn(0, card.lastIndex)) { card.size }
@@ -84,7 +84,7 @@ fun Lens(card: List<Item>, start: Int, pick: Item?, onPick: (Item) -> Unit, onCl
             ZoomPage(card[i], active) { if (active) zoomed = it }
         }
         val x = card[pager.currentPage]
-        val on = pick?.id == x.id
+        val on = x.id in picks
         Row(
             Modifier.fillMaxWidth().background(Brush.verticalGradient(listOf(Color(0x99000000), Color.Transparent)))
                 .statusBarsPadding().padding(start = 6.dp, end = 18.dp, top = 6.dp, bottom = 18.dp),
@@ -106,7 +106,7 @@ fun Lens(card: List<Item>, start: Int, pick: Item?, onPick: (Item) -> Unit, onCl
             Text("$time$dims · ${Fmt.bytes(x.size, ru)}", style = T.Label.copy(color = Color.White), textAlign = TextAlign.Center)
             Text(stringResource(R.string.lens_hint), style = T.Label.copy(color = Color.White.copy(alpha = .7f)), textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 2.dp, bottom = 12.dp))
-            Btn(stringResource(if (on) R.string.lens_picked else R.string.lens_pick), { onPick(x); onClose() },
+            Btn(stringResource(if (on) R.string.lens_picked else R.string.lens_pick), { onPick(x) },
                 Modifier.fillMaxWidth(), if (on) Kind.GREEN else Kind.ACCENT, icon = if (on) Icons.Rounded.Check else null)
         }
     }

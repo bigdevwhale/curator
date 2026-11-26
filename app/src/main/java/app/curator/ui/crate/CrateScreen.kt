@@ -232,9 +232,9 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
         c.write { for (x in s.card) restore(x) }
     }
 
-    /** [keep] stays and the rest go to the act; null keeps them all; [all] writes off every one (#1). */
-    fun series(card: List<Item>, keep: Item?, all: Boolean = false) {
-        val off = if (all) card else if (keep == null) emptyList() else card.filter { it.id != keep.id }
+    /** The shots in [keep] stay and the rest go to the act (#8); null keeps them all; [all] writes off every one (#1). */
+    fun series(card: List<Item>, keep: Set<Long>?, all: Boolean = false) {
+        val off = if (all) card else if (keep == null) emptyList() else card.filter { it.id !in keep }
         val delta = Tally(keep = card.size - off.size, act = off.size, bytes = off.sumOf { it.size })
         hist += Step(card, delta)
         tally += delta
@@ -242,9 +242,10 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
         c.write { for (x in card) decide(x, if (x in off) Verdict.ACT else Verdict.KEEP) }
     }
 
-    // The original chosen in the series on top, and the shot of it looked at closely (#7); both belong to that one card.
+    // The shots marked to keep in the series on top (#8), and the one looked at closely (#7); both belong to that one card.
     val topId = deck.firstOrNull()?.first()?.id
-    var pick by remember(topId) { mutableStateOf<Item?>(null) }
+    var picks by remember(topId) { mutableStateOf(emptySet<Long>()) }
+    fun toggle(x: Item) { picks = if (x.id in picks) picks - x.id else picks + x.id }
     var lens by remember(topId) { mutableStateOf<Int?>(null) }
 
     // The card after next gets its picture now, so it never shows up empty under the top one.
@@ -261,7 +262,7 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
         Box(Modifier.weight(1f).fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp)) {
             if (empty) Text(stringResource(R.string.crate_empty), style = T.Italic.copy(color = C.muted), textAlign = TextAlign.Center, modifier = Modifier.align(Alignment.Center))
             deck.getOrNull(1)?.let { under ->
-                Box(Modifier.fillMaxSize().graphicsLayer { scaleX = .95f; scaleY = .95f; translationY = 14.dp.toPx(); alpha = .8f * lift.value }) { CardFace(under, cr, ru, null, false, false, null) {} }
+                Box(Modifier.fillMaxSize().graphicsLayer { scaleX = .95f; scaleY = .95f; translationY = 14.dp.toPx(); alpha = .8f * lift.value }) { CardFace(under, cr, ru, null, false, false, emptySet()) {} }
             }
             deck.firstOrNull()?.let { top ->
                 val key = top.first().id
@@ -311,7 +312,7 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
                             }
                         })
                 ) {
-                    CardFace(top, cr, ru, dir?.let { it to strength }, fit, exStamp, pick, onPick = { pick = it }, onLens = { lens = it },
+                    CardFace(top, cr, ru, dir?.let { it to strength }, fit, exStamp, picks, onPick = ::toggle, onLens = { lens = it },
                         onAll = { series(top, null, all = true) }) { keep -> series(top, keep) }
                 }
             }
@@ -335,7 +336,7 @@ private fun Table(cr: Crate, label: String, h: Home, nav: Nav, next: () -> Unit)
     }
 
     lens?.let { i ->
-        deck.firstOrNull()?.takeIf { it.size > 1 }?.let { card -> Lens(card, i, pick, onPick = { pick = it }) { lens = null } }
+        deck.firstOrNull()?.takeIf { it.size > 1 }?.let { card -> Lens(card, i, picks, onPick = ::toggle) { lens = null } }
     }
 
     if (expert) ExpertSheet(cr, total) { saved ->
@@ -375,8 +376,8 @@ private val TIME = DateTimeFormatter.ofPattern("HH:mm")
 /** One card on the table: a thing on its inventory card, or a series to choose the original from. */
 @Composable
 private fun CardFace(
-    card: List<Item>, cr: Crate, ru: Boolean, stamp: Pair<Dir, Float>?, fit: Boolean, ex: Boolean, pick: Item?,
-    onPick: (Item) -> Unit = {}, onLens: (Int) -> Unit = {}, onAll: () -> Unit = {}, onSeries: (Item?) -> Unit,
+    card: List<Item>, cr: Crate, ru: Boolean, stamp: Pair<Dir, Float>?, fit: Boolean, ex: Boolean, picks: Set<Long>,
+    onPick: (Item) -> Unit = {}, onLens: (Int) -> Unit = {}, onAll: () -> Unit = {}, onSeries: (Set<Long>?) -> Unit,
 ) {
     val ctx = LocalContext.current
     val x = card.first()
@@ -391,10 +392,10 @@ private fun CardFace(
             LazyVerticalGrid(GridCells.Fixed(if (card.size <= 4) 2 else 3), Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 itemsIndexed(card, key = { _, it -> it.id }) { i, it ->
-                    val on = pick?.id == it.id
+                    val on = it.id in picks
                     // A tap names the original; a long press, or the lens, shows the shot over the whole screen.
                     Box(Modifier.aspectRatio(.8f).clip(RoundedCornerShape(12.dp)).combinedClickable(onLongClick = { onLens(i) }) { onPick(it) }.then(if (on) Modifier.border(3.dp, C.accent, RoundedCornerShape(12.dp)) else Modifier)
-                        .alpha(if (pick != null && !on) .45f else 1f)) {
+                        .alpha(if (picks.isNotEmpty() && !on) .45f else 1f)) {
                         Thumb(it, Modifier.fillMaxSize(), px = 360, shape = RoundedCornerShape(12.dp))
                         if (on) Text(stringResource(R.string.original).uppercase(), style = T.Caps.copy(color = C.onAccent, letterSpacing = T.Caps.letterSpacing * .4f),
                             modifier = Modifier.align(Alignment.BottomStart).padding(4.dp).background(C.accent).padding(horizontal = 5.dp))
@@ -407,7 +408,10 @@ private fun CardFace(
             }
             Row(Modifier.fillMaxWidth().padding(top = 10.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Btn(stringResource(R.string.keep_all), { onSeries(null) }, Modifier.weight(1f), Kind.GHOST)
-                Btn(stringResource(R.string.keep_original), { onSeries(pick) }, Modifier.weight(1f), Kind.GREEN, enabled = pick != null)
+                // One marked is the original; several stay together, and the rest still go (#8).
+                val n = picks.size
+                val keep = when { n == card.size -> stringResource(R.string.keep_all); n > 1 -> stringResource(R.string.keep_n, n); else -> stringResource(R.string.keep_original) }
+                Btn(keep, { onSeries(picks) }, Modifier.weight(1f), Kind.GREEN, enabled = n > 0)
             }
             // Not one of them worth keeping: a second tap, since none will be left.
             var sure by remember(x.id) { mutableStateOf(false) }

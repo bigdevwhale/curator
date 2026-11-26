@@ -6,6 +6,16 @@ line "<!-- tg", then 2-4 short lines in Russian for users (what is new, what is 
 then close it like any HTML comment. The release notes carry it, and the chat bot posts those lines.
 -->
 
+## [1.3.1] - 2026-11-26
+
+### Changed
+- **Several shots of a series can stay (#8).** Similar frames are now marked rather than picked: tap as many as you want to keep, and the button says how many – «Keep 2». The rest go into the act as before. In the full-screen view the button marks and unmarks the shot without closing, so you can go through the whole series there.
+
+<!-- tg
+В похожих кадрах теперь можно оставить несколько: отметьте нужные, и кнопка покажет, сколько останется, – например, «Оставить 2»
+Остальные уйдут в акт, как и раньше. Отмечать можно и в просмотре на весь экран
+-->
+
 ## [1.3.0] - 2026-11-26
 
 ### Added
